@@ -1,0 +1,52 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% block title %} Let's chat papybot ! {% endblock %}
+
+{% block head %}
+    {{super()}}
+    {{fixes.ie8()}}
+
+
+<!-- style sheet import -->
+    {% block styles %}
+        {{super()}}
+<!--        <link rel="stylesheet" type="text/css"-->
+<!--              href="{{url_for('static', filename='css/custom.css')}}">-->
+    {% endblock %}
+{%- endblock %}
+
+{% block body %}
+
+<!-- navigation bar -->
+    {% block navbar %}
+    <div class="navbar navbar-inverse" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle"
+                 data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Papybot</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Accueil</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+<!-- integration of other pages -->
+    <div class="container">
+       {% block content %}{% endblock %}
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}
