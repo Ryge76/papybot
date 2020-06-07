@@ -6,13 +6,13 @@
     {{super()}}
     {{fixes.ie8()}}
 
-
 <!-- style sheet import -->
     {% block styles %}
         {{super()}}
-<!--        <link rel="stylesheet" type="text/css"-->
-<!--              href="{{url_for('static', filename='css/custom.css')}}">-->
+        <link rel="stylesheet" type="text/css"
+              href="{{url_for('static', filename='css/custom.css')}}">
     {% endblock %}
+
 {%- endblock %}
 
 {% block body %}
@@ -20,7 +20,6 @@
 <!-- navigation bar -->
     {% block navbar %}
     <div class="navbar navbar-inverse" role="navigation">
-        <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle"
                  data-toggle="collapse" data-target=".navbar-collapse">
@@ -36,17 +35,31 @@
                     <li><a href="/">Accueil</a></li>
                 </ul>
             </div>
-        </div>
     </div>
     {% endblock %}
 
 <!-- integration of other pages -->
-    <div class="container">
+    <div id="main" class="container">
        {% block content %}{% endblock %}
     </div>
 
+    {% block footer %}
+        <div class="container-fluid">
+            <div class="row">
+                <section class="col-md-6">
+                    <h6>Web app by: G. JASMIN</h6>
+                </section>
+                <section class="col-md-6">
+                    <h6>Follow me on <a href="#">Github</a> </h6>
+                </section>
+            </div>
+        </div>
+    {% endblock %}
+
 {% endblock %}
 
-{% block footer %}
-
+<!-- js script -->
+{% block scripts %}
+    {{super()}}
+    <script src="{{url_for('static', filename='js/gmaps.js')}}" async defer></script>
 {% endblock %}

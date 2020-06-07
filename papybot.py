@@ -1,11 +1,8 @@
-from flask import Flask, render_template
-from flask_bootstrap import Bootstrap
+from flask import render_template
 from .config import GMAPS_KEY
+from . import create_app
 
-app = Flask(__name__)
-app.config.from_object('papybot.config')
-
-Bootstrap(app)
+app = create_app()
 
 
 @app.route('/')

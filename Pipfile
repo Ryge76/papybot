@@ -7,6 +7,7 @@ verify_ssl = true
 pytest = "*"
 selenium = "*"
 flask-debugtoolbar = "*"
+pylint = "*"
 
 [packages]
 flask = "*"
