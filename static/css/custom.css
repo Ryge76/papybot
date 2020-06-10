@@ -1,5 +1,7 @@
 /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
-#main {
-    background-color: 
+body {
+    background-color: #d2e8f5;
+    height: 80%;
 }
+

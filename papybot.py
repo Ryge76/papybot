@@ -9,3 +9,7 @@ app = create_app()
 def index():
     return render_template('index.html', key=GMAPS_KEY)
 
+@app.route('/search')
+def search():
+    return "On line !"
+

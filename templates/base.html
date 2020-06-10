@@ -21,14 +21,16 @@
 
 {% block body %}
 
-<!-- navigation bar -->
+<!-- top navigation bar -->
     {% block navbar %}
-    <div class="navbar navbar-inverse container-fluid" role="navigation">
-            <div class="navbar-header row">
-                <a class="navbar-brand col-md-3" href="/">Papybot</a>
-                <form class="form-inline col-md-9 my-2 my-lg-0">
-                    <input class="form-control col" type="search" placeholder="Pose moi ta question ici" aria-label="Search">
-                    <button class="btn btn-outline-success col my-2 my-sm-0" type="submit">Réponse !</button>
+    <div class="navbar navbar-light fixed-top" style="background-color: #85b3d7" role="navigation">
+            <div>
+                <a class="navbar-brand" href="/" id="top">Papybot</a>
+                <form class="form-inline">
+                    <div>
+                        <input class="form-control m-auto" type="search" placeholder="Pose moi ta question ici" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Réponse !</button>
+                    </div>
                 </form>
             </div>
            
@@ -41,12 +43,13 @@
     </div>
 
     {% block footer %}
-        <div class="container-fluid">
+        <div class="navbar fixed-bottom container-fluid" style="background-color: #85b3d7" role="navigation">
             <div class="row">
-                <section class="col-md-6">
+                <a class="navbar-brand" href="#top">Accueil</a>
+                <section class="col">
                     <h6>Web app by: G. JASMIN</h6>
                 </section>
-                <section class="col-md-6">
+                <section class="col ">
                     <h6>Follow me on <a href="#">Github</a> </h6>
                 </section>
             </div>
