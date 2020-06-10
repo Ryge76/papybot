@@ -2,6 +2,8 @@
        * element that contains the map. */
 body {
     background-color: #d2e8f5;
-    height: 80%;
 }
 
+document {
+    height: 100%;
+}

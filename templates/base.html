@@ -1,10 +1,13 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/fixes.html" as fixes %}
+
 {% block title %} Let's chat papybot ! {% endblock %}
 
 {% block head %}
     {{super()}}
     {{fixes.ie8()}}
+
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
 
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='/images/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='/images/favicon-96x96.png') }}">
@@ -28,8 +31,8 @@
                 <a class="navbar-brand" href="/" id="top">Papybot</a>
                 <form class="form-inline">
                     <div>
-                        <input class="form-control m-auto" type="search" placeholder="Pose moi ta question ici" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Réponse !</button>
+                        <input class="form-control flex-grow m-auto" type="search" placeholder="Pose moi ta question ici" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Réponse...</button>
                     </div>
                 </form>
             </div>
@@ -43,17 +46,17 @@
     </div>
 
     {% block footer %}
-        <div class="navbar fixed-bottom container-fluid" style="background-color: #85b3d7" role="navigation">
+        <footer class="navbar fixed-bottom container-fluid" style="background-color: #85b3d7" role="navigation">
             <div class="row">
                 <a class="navbar-brand" href="#top">Accueil</a>
                 <section class="col">
-                    <h6>Web app by: G. JASMIN</h6>
+                    <h6>Webapp by: G. JASMIN</h6>
                 </section>
                 <section class="col ">
                     <h6>Follow me on <a href="#">Github</a> </h6>
                 </section>
             </div>
-        </div>
+        </footer>
     {% endblock %}
 
 {% endblock %}
