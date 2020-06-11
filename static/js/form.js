@@ -1,12 +1,20 @@
-const formElt = $("#query");
-const questionListElt = $(".test li:first");
-console.log("je suis form.js !")
+const formElt = document.getElementById("query");
+const questionListElt = document.getElementById("test");
 
-formElt.change((e)=>{
-    console.error('Je suis bien appelé !')
+// create <li> element to be added
+const addListElt = (content) => {
+    let liElt = document.createElement("li");
+    liElt.classList.add("visitor");
+    liElt.textContent = content;
+    return liElt
+}
+
+formElt.addEventListener("change", function(e){
     let queryText = "";
-    queryText = $(this).text();
-    questionListElt.insertBefore(queryText);
-})
+    queryText = e.target.value;
+    let liToAdd = addListElt(queryText);
+    questionListElt.appendChild(liToAdd);
+    formElt.textContent = "";
+});
 
 
