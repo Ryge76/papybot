@@ -1,7 +1,20 @@
-
 {% extends "base.html" %}
-{% block content %}
 
-  <h1>Petit test pour voir l'intégration de Flask-bootstrap !</h1>
+{% block content %}
+  <h1>Bienvenue !</h1>
+  {% if question==None %}
+     <h1>Que veux-tu savoir ?</h1>
+
+  {% else %}
+    {% for question, answer in feedback %}
+
+    <ul>
+        <li class="bot">{{question}}</li>
+        <li class="visitor">{{answer}}</li>
+    </ul>
+    {% endfor %}
+
+  {% endif %}
+
 
 {% endblock %}
