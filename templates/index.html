@@ -1,20 +1,37 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Bienvenue !</h1>
-  {% if question==None %}
-     <h1>Que veux-tu savoir ?</h1>
+  <div id="welcome" class="row">
+    <h1 class="col">Bienvenue !
+      <img class="col-2" src="{{url_for('static', filename='images/bot_head.png')}}" alt="robot head smiling" />
+    </h1>
+    <h4 class="col-12">Que veux tu savoir ?</h4>  
+  </div>
 
-  {% else %}
+  <div class="row">
+          <ul class="test">
+            <li class="bot"></li>
+            <li class="visitor"></li>
+          </ul>
+  </div>
+
+  <div>
+    {% if question==None %}
+    <h1>Que veux-tu savoir ?</h1>
+    
+    {% else %}
+
     {% for question, answer in feedback %}
-
-    <ul>
+    
+      <ul class="question-list">
         <li class="bot">{{question}}</li>
         <li class="visitor">{{answer}}</li>
-    </ul>
+      </ul>
+
     {% endfor %}
+    
+    {% endif %}
 
-  {% endif %}
-
-
+  </div>
+  
 {% endblock %}
