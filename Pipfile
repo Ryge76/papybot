@@ -11,7 +11,7 @@ pylint = "*"
 
 [packages]
 flask = "*"
-flask-bootstrap = "*"
+spacy = "*"
 
 [requires]
 python_version = "3.8"

@@ -14,7 +14,6 @@ formElt.addEventListener("change", function(e){
     queryText = e.target.value;
     let liToAdd = addListElt(queryText);
     questionListElt.appendChild(liToAdd);
-    formElt.textContent = "";
 });
 
 
