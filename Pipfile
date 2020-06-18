@@ -13,6 +13,7 @@ pylint = "*"
 flask = "*"
 spacy = "*"
 blis = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"
