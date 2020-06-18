@@ -1,4 +1,3 @@
-import spacy
 import fr_core_news_sm
 import logging
 
@@ -6,36 +5,139 @@ import logging
 pl = logging.getLogger('components.parser')
 pl.info("spacy initialized")
 
-# nlp = spacy.load("fr_core_news_sm")
-nlp = fr_core_news_sm.load()
 
-# demo sentence
-doc = nlp("Salut GrandPy ! Est-ce que tu connais l'adresse d'OpenClassrooms ?")
+class Analyze:
+    """Analyze sentence given in parameter during instantiation. """
 
-"""
-Etapes: 
-    - chercher les verbes
-    - chercher les entités
-    - voir si lien entre les verbes et les entités
-    - voir si entités correspond à un lieu géographique
-    - sinon recherche sur les mots
-"""
+    @staticmethod
+    def is_greeting(token):
+        greeting_words = ("bonjour", "bonsoir", "au revoir", "adieu", "salut",
+                          "coucou", "hey", "'lut", "hello", "merci", "bonne "
+                                                                     "nuit")
 
-# get valuable tokens from sentence by getting rid of punctuation and words in stop-word list
-for token in doc:
-    if not (token.is_stop or token.is_punct):
-        print(token.text)
+        if token.lower_ in greeting_words:
+            return True
+        else:
+            return False
 
-valuable_info = [token for token in doc if not (token.is_stop or token.is_punct)]
-print(valuable_info)
+    @staticmethod
+    def is_location(entity):
+        """Check if en entity found in the document has a type in the defined
+        target. Require a spacy ents type. Returns a boolean."""
 
-# get lemma for every valuable token
+        target_ent_type = ("LOC", "GPE", "ORG")
 
-# get entities from sentence
-for ent in doc.ents:
-    print(ent.label_, ent.text)
+        if entity.label_ in target_ent_type:
+            return True
+
+        else:
+            return False
+
+    @staticmethod
+    def is_travel_verb(verb_token):
+        """Check if a verb token found in the document is in the defined
+        target. Require a spacy ents type. Returns a boolean."""
+
+        target_verbs = ("aller", "bouger", "bourlinguer", "circuler", "courir",
+                        "déplacer", "excursionner", "filer", "louvoyer",
+                        "marcher",
+                        "naviguer", "nomadiser", "pérégriner", "partir",
+                        "se balader",
+                        "se déplacer", "se promener", "se transporter",
+                        "sillonner",
+                        "transhumer", "vagabonder", "visiter", "voyager",
+                        "se promoner", "se rendre")
+
+        if verb_token.lemma_ in target_verbs:
+            return True
+        else:
+            return False
+
+    def __init__(self, sentence):
+        self.found_locations = []  # list of location entities in sentence
+        self.found_travel_verbs = []  # list of travel verbs in sentence
+        self.valuable_info = []  # out of stopword and punctuation tokens
+        self.found_greetings = []  # list of greetings words
+
+        nlp = fr_core_news_sm.load()
+        self.doc = nlp(sentence)
+        self.get_valuable_info()
+
+    def show_entities(self):
+        for ent in self.doc.ents:
+            print("Entité: {} > Etiquette: {}".format(ent.text, ent.label_))
+
+    def get_valuable_info(self):
+        """"Get only tokens that are not punctuation marks or part of the
+        stopwords list."""
+
+        # TryExcept pour phrase vide
+        self.valuable_info = [token for token in self.doc if not (
+                token.is_stop or token.is_punct)]
+        print("Phrase initiale: {a}. \n Mots retenus: {b}".format(
+            a=self.doc.text, b=self.valuable_info))
+
+    def check_greetings(self):
+        """Check if there are greetings word in sentence."""
+        for token in self.valuable_info:
+            greeting = self.is_greeting(token)
+            if greeting:
+                pl.info("{} est un mot de salutation.".format(
+                    token.lemma_))
+                self.found_greetings.append(token)
+                print("Salutation trouvée: {} ".format(*self.found_greetings))
+                return
+        print("Pas de mots de saluation dans la phrase.")
+
+    def check_location(self):
+        """Check if there are entities in given sentence that are considered
+        location entities."""
+        for ent in self.doc.ents:
+            pl.info("Recherche des entitées dans le document...")
+            if ent is None:
+                pl.info("Pas d'entités retrouvées.")
+                return
+            else:
+                location = self.is_location(ent)
+                if location:
+                    pl.info("Entitée de lieu trouvée: {a} > label: {b}".format(
+                        a=ent.text, b=ent.label_))
+                    self.found_locations.append(ent)
+
+        print("Lieu(x) trouvé(s): {}".format(
+            self.found_locations))
+
+    def check_travel_verb(self):
+        """Check if there are verbs in the semantic field of travel"""
+        verbs_only = [token for token in self.valuable_info
+                      if token.pos_ == "VERB"]
+
+        for token in verbs_only:
+            verb = self.is_travel_verb(token)
+            if verb:
+                pl.info("{} fait partie des verbes nécessitant une recherche "
+                        "sur carte.".format(token.lemma_))
+                self.found_travel_verbs.append(token)
+
+        print("Verbe(s) trouvé(s): {} ".format(self.found_travel_verbs))
+
+    def parse_noun_chunks(self):
+        """Parse sentence to get noun chunks and their roots."""
+
+        for chunk in self.doc.noun_chunks:
+            print("Groupe nominal: ", chunk.text, " >> racine du groupe: ",
+                  chunk.root.text, " > role: ", chunk.root.dep_,
+                  " > racine dans la phrase: ", chunk.root.head.text)
 
 
+def main():
+    test = Analyze("Quelle est l'adresse d'Openclassrooms ?")
+    test.check_greetings()
+    test.show_entities()
+    test.check_location()
+    test.check_travel_verb()
+    test.parse_noun_chunks()
 
 
-
+if __name__ == '__main__':
+    main()
