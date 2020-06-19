@@ -85,7 +85,7 @@ class Analyze:
                 pl.info("{} est un mot de salutation.".format(
                     token.lemma_))
                 self.found_greetings.append(token)
-                print("Salutation trouvée: {} ".format(*self.found_greetings))
+                print("Salutation trouvée: {} ".format(self.found_greetings))
                 return
         print("Pas de mots de saluation dans la phrase.")
 

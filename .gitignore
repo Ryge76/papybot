@@ -86,6 +86,7 @@ ipython_config.py
 
 #pycharm folders
 .idea/
+--wait
 
 # pyenv
 .python-version

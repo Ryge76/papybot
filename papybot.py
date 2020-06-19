@@ -2,6 +2,8 @@ from flask import render_template, request
 from .config import GMAPS_KEY
 from . import create_app
 
+from .components.lang import parser
+
 app = create_app()
 
 
@@ -16,8 +18,10 @@ def index():
 @app.route('/search/', methods=['POST'])
 def search():
     if request.method == 'POST':
+        user_input = request.form
+        print(user_input)
+        return render_template('index.html')
 
-        return render_template('index.html', key=GMAPS_KEY)
     else:
         return render_template('index.html')
 
