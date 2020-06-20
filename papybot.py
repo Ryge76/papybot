@@ -18,7 +18,7 @@ def index():
 @app.route('/search/', methods=['POST'])
 def search():
     if request.method == 'POST':
-        user_input = request.form
+        user_input = request.form.get('query')
         print(user_input)
         return render_template('index.html')
 

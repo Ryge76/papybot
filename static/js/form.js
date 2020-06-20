@@ -11,16 +11,16 @@ const addListElt = (content) => {
 
 // setting callback function to back-end server
 
-async const callHome = (search) => {
+const callHome = async (search) => {
 
-    await fetch('127.0.0.1/search/', {
+    await fetch('/search/', {
         method: 'POST',
         cache: 'no-store',
         mode: 'cors',
         headers: {
             'Content-type': 'application/json'
         },
-        body: JSON.stringify(search),
+        body: JSON.stringify({query: search}),
     })
     .then((response) =>{
         if (response.status === 200) {
@@ -43,8 +43,8 @@ formElt.addEventListener("submit", function(e) {
     console.log("Formulaire validé");
     e.preventDefault()
     let searchText = "";
-    searchText = form.elements.search.value;
-    console.log(searchText);
+    searchText = formElt.elements.search.value;
+    console.log("La valeur reçue: ", searchText);
 
     // passer la demande au back-end
     console.log("Appel de la fonction callHome");

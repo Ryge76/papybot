@@ -21,9 +21,9 @@
         <div class="navbar navbar-light container-fluid" style="background-color: #85b3d7" role="navigation">
             <div class="row">
                 <a class="navbar-brand col" href="/" id="top">Papybot</a>
-                <form id="query" class="form-inline" method="POST">
+                <form id="query" class="form-inline">
                     <div>
-                        <input id="search" class="form-control" type="search" placeholder="Pose moi ta question ici" aria-label="Search">
+                        <input id="search" class="form-control" type="search" maxlength="150" required autofocus placeholder="Pose moi ta question ici" aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Réponse...</button>
                     </div>
                 </form>
