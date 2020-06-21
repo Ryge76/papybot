@@ -18,8 +18,9 @@ def index():
 @app.route('/search/', methods=['POST'])
 def search():
     if request.method == 'POST':
-        user_input = request.form.get('query')
-        print(user_input)
+        user_input = request.get_json().get('query')
+        print("L'utilisateur demande: '{}'".format(user_input))
+        analyse = parser.Analyze(user_input)
         return render_template('index.html')
 
     else:

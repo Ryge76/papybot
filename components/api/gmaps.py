@@ -2,8 +2,8 @@ import requests
 
 
 class Gmaps:
-    """Class allowing to call Google Maps API. Require a query string. Response is saved in the 'response' attribute of
-    the class"""
+    """Class allowing to call Google Maps API. Require a query string.
+    Response is saved in the 'response' attribute of the class"""
     
     URL = "https://www.google.com/maps/search/?api=1"
 
@@ -14,7 +14,8 @@ class Gmaps:
         self.response = self.call_api()
 
     def call_api(self):
-        """Call Google Maps API with specified query. Return the response object"""
+        """Call Google Maps API with specified query.
+        Return the response object"""
         session = requests.Session()
         response = session.get(url=self.URL, params=self.params)
         return response

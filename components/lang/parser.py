@@ -42,7 +42,7 @@ class Analyze:
                         "déplacer", "excursionner", "filer", "louvoyer",
                         "marcher",
                         "naviguer", "nomadiser", "pérégriner", "partir",
-                        "se balader",
+                        "se balader", "se trouver", "trouver",
                         "se déplacer", "se promener", "se transporter",
                         "sillonner",
                         "transhumer", "vagabonder", "visiter", "voyager",
@@ -54,10 +54,13 @@ class Analyze:
             return False
 
     def __init__(self, sentence):
-        self.found_locations = []  # list of location entities in sentence
-        self.found_travel_verbs = []  # list of travel verbs in sentence
+        self.locations = []  # list of location entities in sentence
+        self.found_locations = False
+        self.travel_verbs = []  # list of travel verbs in sentence
+        self.found_travel_verbs = False
         self.valuable_info = []  # out of stopword and punctuation tokens
-        self.found_greetings = []  # list of greetings words
+        self.greetings = []  # list of greetings words
+        self.found_greetings = False
 
         nlp = fr_core_news_sm.load()
         self.doc = nlp(sentence)
@@ -84,8 +87,9 @@ class Analyze:
             if greeting:
                 pl.info("{} est un mot de salutation.".format(
                     token.lemma_))
-                self.found_greetings.append(token)
-                print("Salutation trouvée: {} ".format(self.found_greetings))
+                self.greetings.append(token)
+                self.found_greetings = True
+                print("Salutation trouvée: {} ".format(self.greetings))
                 return
         print("Pas de mots de saluation dans la phrase.")
 
@@ -102,10 +106,11 @@ class Analyze:
                 if location:
                     pl.info("Entitée de lieu trouvée: {a} > label: {b}".format(
                         a=ent.text, b=ent.label_))
-                    self.found_locations.append(ent)
+                    self.locations.append(ent)
+                    self.found_locations = True
 
         print("Lieu(x) trouvé(s): {}".format(
-            self.found_locations))
+            self.locations))
 
     def check_travel_verb(self):
         """Check if there are verbs in the semantic field of travel"""
@@ -117,9 +122,10 @@ class Analyze:
             if verb:
                 pl.info("{} fait partie des verbes nécessitant une recherche "
                         "sur carte.".format(token.lemma_))
-                self.found_travel_verbs.append(token)
+                self.travel_verbs.append(token)
+                self.found_travel_verbs = True
 
-        print("Verbe(s) trouvé(s): {} ".format(self.found_travel_verbs))
+        print("Verbe(s) trouvé(s): {} ".format(self.travel_verbs))
 
     def parse_noun_chunks(self):
         """Parse sentence to get noun chunks and their roots."""
