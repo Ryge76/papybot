@@ -25,7 +25,8 @@ const callHome = async (search) => {
     .then((response) =>{
         if (response.status === 200) {
             console.log("Back-end a répondu: Rock'n Roll Baby !");
-            console.log(response)
+            let answer = response.json()
+            console.log(answer);
         }
         else {
             console.log("Try again: ", response.statusText);

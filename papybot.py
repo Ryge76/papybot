@@ -1,4 +1,4 @@
-from flask import render_template, request, make_response
+from flask import render_template, request, make_response, jsonify
 from .config import GMAPS_KEY
 from . import create_app
 
@@ -62,6 +62,8 @@ def search():
             analysis_results.update({"rephrase": True})
 
         print(analysis_results)
+        # response = make_response(analysis_results)
+        # response.headers.update({'Content-type': 'application/json'})
 
-    return analysis_results
+    return jsonify(analysis_results)
 
