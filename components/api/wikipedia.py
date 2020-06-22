@@ -2,7 +2,10 @@ import requests
 
 
 class Wikipedia:
-    """Access wikipedia API for search on name"""
+    """Access wikipedia API for search on name. Requiere a string for instanciation.
+    'infos' property keep a dict containing an extract and the url of found page.
+    Only the first page found on wikipedia (sorted by relevance) is queried"""
+
     URL = "https://fr.wikipedia.org/w/api.php"
 
     def __init__(self, query):
@@ -56,7 +59,7 @@ class Wikipedia:
 
     def get_infos(self, page_id):
         """Get extract of a specific page. Require a page id. Return a dict
-        containing page extract and url
+        containing page extract and url.
         ."""
 
         # add page id to parameters for the api call

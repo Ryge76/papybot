@@ -5,6 +5,8 @@ import logging
 pl = logging.getLogger('components.parser')
 pl.info("spacy initialized")
 
+# TODO  fix logger and replace print statements
+
 
 class Analyze:
     """Analyze sentence given in parameter during instantiation. """
@@ -64,20 +66,22 @@ class Analyze:
 
         nlp = fr_core_news_sm.load()
         self.doc = nlp(sentence)
+        self.entities = self.doc.ents
         self.get_valuable_info()
 
-    def show_entities(self):
-        for ent in self.doc.ents:
-            print("Entité: {} > Etiquette: {}".format(ent.text, ent.label_))
+    def get_entities(self):
+        print("\n Nombre d'entités trouvées: {}.".format(len(self.entities)))
+        for ent in self.entities:
+            print("\n Entité: {a} > Etiquette: {b}".format(a=ent.text, b=ent.label_))
 
     def get_valuable_info(self):
         """"Get only tokens that are not punctuation marks or part of the
         stopwords list."""
 
-        # TryExcept pour phrase vide
+        # TODO TryExcept pour phrase vide
         self.valuable_info = [token for token in self.doc if not (
                 token.is_stop or token.is_punct)]
-        print("Phrase initiale: {a}. \n Mots retenus: {b}".format(
+        print("\n Phrase initiale: {a}. \n Mots retenus: {b}".format(
             a=self.doc.text, b=self.valuable_info))
 
     def check_greetings(self):
@@ -109,7 +113,7 @@ class Analyze:
                     self.locations.append(ent)
                     self.found_locations = True
 
-        print("Lieu(x) trouvé(s): {}".format(
+        print("\n Lieu(x) trouvé(s): {}".format(
             self.locations))
 
     def check_travel_verb(self):
@@ -137,9 +141,9 @@ class Analyze:
 
 
 def main():
-    test = Analyze("Quelle est l'adresse d'Openclassrooms ?")
+    test = Analyze("Où se trouve Openclassrooms ?")
     test.check_greetings()
-    test.show_entities()
+    test.get_entities()
     test.check_location()
     test.check_travel_verb()
     test.parse_noun_chunks()
