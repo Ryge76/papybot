@@ -3,7 +3,7 @@ from .config import GMAPS_KEY
 from . import create_app
 
 from .components.lang import parser
-from .components.api import gmaps
+from .components.api import maps
 from .components.api import wikipedia
 
 app = create_app()
@@ -32,9 +32,10 @@ def search():
         print("L'utilisateur demande: '{}'".format(user_input))
         analysis = parser.Analyze(user_input)
 
-        # take action depending on the parsing results. Whether calling Wikipedia or/and Google Maps API
+        # take action depending on the parsing results. Whether calling
+        # Wikipedia or/and Google Maps API
         api_call = {1: wikipedia.Wikipedia,
-                    2: gmaps.Gmaps}
+                    2: maps.Gmaps}
 
         # action on greetings words
         if analysis.found_greetings:
@@ -42,7 +43,7 @@ def search():
 
         # search  on location found
         if analysis.found_locations:
-            maps_search = api_call[2](analysis.locations[0])
+            maps_search = api_call[2]().get(analysis.locations[0])
             wikipedia_search = api_call[1](analysis.locations[0])
 
             analysis_results.update({"gmaps": maps_search.response,

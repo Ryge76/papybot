@@ -16,6 +16,7 @@ spacy = "*"
 blis = "*"
 requests = "*"
 fr-core-news-sm = "*"
+googlemaps = "*"
 
 [requires]
 python_version = "3.7"
