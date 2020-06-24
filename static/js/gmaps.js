@@ -1,38 +1,37 @@
 // create <li> element to be added
-const addListElt = (content) => {
+const createListElt = (content, from) => {
   let liElt = document.createElement("li");
-  liElt.classList.add("visitor");
+
+  if (from === 'robot') {
+    liElt.classList.add("robot");
+  }
+  else {
+    liElt.classList.add("visitor");
+  }
+  
   liElt.textContent = content;
   return liElt
 }
 
-// function to create a map placeholder
+// include element
+const addToChat = (element) => {
+  let chatElt = document.getElementById("test");
+  chatElt.insertAdjacentElement("afterbegin", element);
+}
+
+// function that creates a <div> element to hold a map
 const createMapElt = () => {
   let mapElt = document.createElement("div");
   mapElt.classList.add("map");
   return mapElt
 }
 
-// let geocoder
-// let map
-// function initialize() {
-//   geocoder = new google.maps.Geocoder();
-//   var latlng = new google.maps.LatLng(-34.397, 150.644);
-//   var mapOptions = {
-//     zoom: 8,
-//     center: latlng
-//   }
-//   map = new google.maps.Map(document.getElementById('map'), mapOptions);
-// }
-
-
-
-
+// function to get the address and the coordinates of the place queried
 const getCoordinates = (query) => {
   // initialize geocoder to get coordinates from query
   const geocoder = new google.maps.Geocoder();
 
-  geocoder.geocode( {'address' : query}), function(results, status) {
+  geocoder.geocode({'address' : query}), function(results, status) {
     if (status === 'OK') {
       const queryAddress = results[0].formatted_address;
       const queryCoord = results[0].geometry.location;
@@ -53,7 +52,42 @@ const createMap = (queryCoord) => {
   return elt
 }
 
+// function to pass query to Google Maps API and eventually retrieve an address
+// Requiere a string. Return a JS Object with an div elt and a string
+const gmapsCall = (query) => {
+  const coordinates = getCoordinates(query);
+  const mapElt = createMap(coordinates['queryCoord']);
+  return {elt:mapElt, address:coordinates['queryAddress']}
+}
 
+// faire un appel
+
+// récupérer le texte et l'inclure
+
+
+// récupérer la carte et l'inclure
+
+
+// get api key from environnement
+const mapsKey = process.env.GMAPS_KEY
+
+
+fetch("https://maps.googleapis.com/maps/api/js?key=mapsKey&callback=initMap")
+
+
+
+
+// let geocoder
+// let map
+// function initialize() {
+//   geocoder = new google.maps.Geocoder();
+//   var latlng = new google.maps.LatLng(-34.397, 150.644);
+//   var mapOptions = {
+//     zoom: 8,
+//     center: latlng
+//   }
+//   map = new google.maps.Map(document.getElementById('map'), mapOptions);
+// }
 
 /*
 {
@@ -66,22 +100,3 @@ const createMap = (queryCoord) => {
 }
 
 */
-let map;
-let marker;
-const mapsKey = process.env.GMAPS_KEY
-
-const initMap = () => {
-  console.log("Je suis activé !");
-  map = new google.maps.Map(mapElt, {
-    center: {lat: -34.397, lng: 150.644},
-    zoom: 8
-  });
-  
-  marker = new google.maps.Marker({
-    position: lieu,
-    map: map
-  });
-}
-
-fetch("https://maps.googleapis.com/maps/api/js?key=mapsKey&callback=initMap")
-
