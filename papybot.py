@@ -20,10 +20,12 @@ def index():
 @app.route('/search/', methods=['POST'])
 def search():
 
-    analysis_results = {"greetings": "",
+    analysis_results = {"greetings": False,
+                        "greeting_word": "",
                         "rephrase": False,
                         "notsure": False,
                         "notsure_search": "",
+                        "searched_word": "",
                         "gmaps": "",
                         "wikipedia": ""}
 
@@ -39,24 +41,28 @@ def search():
 
         # action on greetings words
         if analysis.found_greetings:
-            analysis_results.update({"greetings": analysis.found_greetings})
+            analysis_results.update({"greeting_word":
+                                     analysis.greetings[0]})
 
         # search  on location found
         if analysis.found_locations:
             maps_search = api_call[2]().get(analysis.locations[0])
             wikipedia_search = api_call[1](analysis.locations[0])
 
-            analysis_results.update({"gmaps": maps_search.response,
-                                     "wikipedia": wikipedia_search.infos})
+            analysis_results.update({"gmaps": maps_search,
+                                     "wikipedia": wikipedia_search.infos,
+                                     "searched_word": analysis.locations[0]})
 
         # take a bet and search for the first entity found in input on Wikipedia
         else:
             if len(analysis.entities) != 0:
                 wikipedia_search = api_call[1](analysis.entities[0].text)
+                maps_search = api_call[2]().get(analysis.entities[0].text)
 
                 analysis_results.update({"wikipedia": wikipedia_search.infos,
                                          "notsure": True,
-                                         "notsure_search": analysis.entities[0].text})
+                                         "notsure_search": analysis.entities[0].text,
+                                         "gmaps": maps_search})
 
         # what to do if the parser don't understand the input
         if len(analysis.entities) == 0:
