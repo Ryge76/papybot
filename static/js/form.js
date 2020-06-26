@@ -1,3 +1,5 @@
+import {gmapsCall, mapsKey, createMap, getCoordinates, createMapElt} from './gmaps';
+
 const formElt = document.getElementById("query");
 const questionListElt = document.getElementById("test");
 

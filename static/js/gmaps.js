@@ -1,3 +1,6 @@
+// get api key from environnement
+const mapsKey = process.env.GMAPS_KEY
+
 // create <li> element to be added
 const createListElt = (content, from) => {
   let liElt = document.createElement("li");
@@ -68,11 +71,12 @@ const gmapsCall = (query) => {
 // récupérer la carte et l'inclure
 
 
-// get api key from environnement
-const mapsKey = process.env.GMAPS_KEY
+
 
 
 fetch("https://maps.googleapis.com/maps/api/js?key=mapsKey&callback=initMap")
+
+export {gmapsCall, mapsKey, createMap, getCoordinates, createMapElt}
 
 
 
