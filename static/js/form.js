@@ -55,7 +55,7 @@ const callHome = async (search) => {
 
             if (answer['notsure']) {
                 // TODO: function to generate various hesitation expressions
-                sentence += "Hmm, j'hésite... \n Ce que je sais c'est que " + answer['wikipedia'].extract;
+                sentence += "Hmm, j'hésite... \nCe que je sais c'est que " + answer['wikipedia'].extract;
                 sentence += "\n Si tu veux en savoir plus: " + answer['wikipedia'].url
                 return addTextToChat(sentence, 'robot');
             }
