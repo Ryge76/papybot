@@ -4,6 +4,7 @@ import logging
 # create parser logger as pl for short
 pl = logging.getLogger('components.parser')
 pl.info("spacy initialized")
+nlp = fr_core_news_sm.load()
 
 # TODO  fix logger and replace print statements
 
@@ -64,7 +65,6 @@ class Analyze:
         self.greetings = []  # list of greetings words
         self.found_greetings = False
 
-        nlp = fr_core_news_sm.load()
         self.doc = nlp(sentence)
         self.entities = self.doc.ents
         self.get_valuable_info()
@@ -141,7 +141,7 @@ class Analyze:
 
 
 def main():
-    test = Analyze("Où se trouve Openclassrooms ?")
+    test = Analyze("Salut GrandPy ! Est-ce que tu connais l'adresse d'OpenClassrooms ?")
     test.check_greetings()
     test.get_entities()
     test.check_location()
