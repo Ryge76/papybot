@@ -3,3 +3,9 @@
 body {
     background-color: #d2e8f5;
 }
+
+.map {
+    height: 400px;
+    width: 100%;
+    /* margin: auto; */
+}

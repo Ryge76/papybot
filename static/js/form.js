@@ -1,30 +1,35 @@
-import {gmapsCall, mapsKey, createMap, getCoordinates, createMapElt} from './gmaps';
+import {createMap} from './gmaps.js';
 
 const formElt = document.getElementById("query");
-const questionListElt = document.getElementById("test");
+const waitElt = document.getElementById("wait");
+const questionListElt = document.getElementById("chat");
+const visitorClasses = ["visitor", "my-md-2", "list-group-item", "list-group-item-warning"];
+const robotClasses = ["robot", "my-md-2", "list-group-item", "list-group-item-success"];
 
 // create <li> element to be added
-const createListElt = (content, category) => {
+const createListElt = (content, classTags) => {
     let liElt = document.createElement("li");
-    liElt.classList.add(category);
+    liElt.classList.add(...classTags);
     liElt.textContent = content;
     return liElt
 }
 
 // insert dialog elements to the chat
-const addTextToChat = (content, category) => {
-    let liElt = createListElt(content, category);
+const addTextToChat = (content, classTags) => {
+    let liElt = createListElt(content, classTags);
     questionListElt.insertAdjacentElement("afterbegin", liElt);
 }
 
-// insert map elements to the chat
+// insert map element to the chat
 const addMapToChat = (content) => {
-    questionListElt.insertAdjacentElement("afterbegin", liElt);
+    console.log("Ajout de la carte à la conversation.");
+    questionListElt.insertAdjacentElement("afterbegin", content);
 }
+
 
 // setting callback function to back-end server
 const callHome = async (search) => {
-    await fetch('/search/', {
+    const response = await fetch('/search/', {
         method: 'POST',
         cache: 'no-store',
         mode: 'cors',
@@ -32,7 +37,34 @@ const callHome = async (search) => {
             'Content-type': 'application/json'
         },
         body: JSON.stringify({query: search}),
-    })
+    });
+    return response
+}
+
+// display question asked in the chat
+// formElt.addEventListener("change", function(e){
+//     let queryText = "";
+//     queryText = e.target.value;
+//     addTextToChat(queryText, visitorClasses);
+// });
+
+
+// handle form submission 
+formElt.addEventListener("submit", function(e) {
+    console.log("Formulaire validé");
+    e.preventDefault()
+    let searchText = "";
+    searchText = formElt.elements.search.value;
+    console.log("La valeur reçue: ", searchText);
+
+    // TODO function to animate waiting phase
+    addTextToChat(searchText, visitorClasses);
+    addTextToChat("Laisse moi y réfléchir...", robotClasses);
+    waitElt.classList.toggle("invisible");
+
+    // text passed to back-end
+    console.log("Appel de la fonction au backend via callHome");
+    callHome(searchText)
         .then((response) => {
             if (response.status === 200) {
                 console.log("Back-end a répondu: Rock'n Roll Baby !");
@@ -49,6 +81,7 @@ const callHome = async (search) => {
         })
         .then((answer) => {
             console.log("On passe à la création des phrases réponses.")
+            waitElt.classList.toggle("invisible");
             let sentence = "";
 
             if (answer['greetings']) {
@@ -57,48 +90,35 @@ const callHome = async (search) => {
 
             if (answer['notsure']) {
                 // TODO: function to generate various hesitation expressions
-                sentence += "Hmm, j'hésite... \nCe que je sais c'est que " + answer['wikipedia'].extract;
-                sentence += "\n Si tu veux en savoir plus: " + answer['wikipedia'].url
-                return addTextToChat(sentence, 'robot');
+                sentence += "Hmm... \nCe que je sais c'est que " + answer['wikipedia'].extract;
+                sentence += "\n Si tu veux en savoir plus: " + answer['wikipedia'].url;
+                
+                let mapElt = createMap(answer['gmaps'].coord);
+                addMapToChat(mapElt);
+                // createMap(answer['gmaps'].coord);
+                addTextToChat(sentence, robotClasses);
+                return
             }
 
             if (answer['rephrase']) {
                 sentence += "Désolé, je n'ai pas compris ta demande... \n Pourrais-tu la reformuler autrement ? \n";
-                return addTextToChat(sentence, 'robot');
+                return addTextToChat(sentence, robotClasses);
             }
 
             // TODO: function to generate various ok response
             sentence += "Je connais bien " + answer['searched_word'] + ". \n";
-            sentence += "L'adresse pour t'y rendre c'est: " + answer['gmaps'].address
-            return addTextToChat(sentence, 'robot');
+            sentence += "L'adresse pour t'y rendre c'est: " + answer['gmaps'].address;
+            
+            let mapElt = createMap(answer['gmaps'].coord);         
+            addMapToChat(mapElt);
+            addTextToChat(sentence, robotClasses);
         })
         .catch((error) => {
+            waitElt.classList.toggle("invisible");
+            addTextToChat("Je suis désolé, ma réflexion n'a pas abouti...", robotClasses);
             console.error("Quelque chose s'est mal passé: ", error);
+        })
+        .finally(() => {
+            formElt.elements.search.value="";
         });
-}
-
-
-// display question asked in the chat
-formElt.addEventListener("change", function(e){
-    let queryText = "";
-    queryText = e.target.value;
-    addTextToChat(queryText, "visitor")
 });
-
-// handle form submission 
-formElt.addEventListener("submit", function(e) {
-    console.log("Formulaire validé");
-    e.preventDefault()
-    let searchText = "";
-    searchText = formElt.elements.search.value;
-    console.log("La valeur reçue: ", searchText);
-
-    // TODO function to animate waiting phase
-    addTextToChat("Laisse moi y réfléchir...", "robot");
-
-    // text passed to back-end
-    console.log("Appel de la fonction au backend via callHome");
-    callHome(searchText) 
-});
-
-

@@ -5,30 +5,27 @@
     <h1 class="col">Bienvenue !
       <img class="col-2" src="{{url_for('static', filename='images/bot_head.png')}}" alt="robot head smiling" />
     </h1>
-    <h4 class="col-12">Que veux tu savoir ?</h4>  
+    <h4 class="col-12 font-weight-light">Que veux tu savoir ?</h4>  
   </div>
 
+  <div id="map" class="row">
+  </div>
+
+  <!-- loading animation on top of the chat list -->
+  <div id="wait" class="text-center invisible">
+    <h5 id="wait-text" class="text-success">
+      <strong>Reflexion en cours...</strong>
+    </h5>
+    <div class="spinner-border text-success ml-auto" role="status" aria-hidden="true">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+  <!-- chat -->
   <div class="row">
-          <ul id="test" class="test"></ul>
+    <ul id="chat" class="col list-group chat">
+    </ul>
   </div>
 
-  <div>
-    {% if question==None %}
-    <h1>Que veux-tu savoir ?</h1>
-    
-    {% else %}
-
-    {% for question, answer in feedback %}
-    
-      <ul class="question-list">
-        <li class="bot">{{question}}</li>
-        <li class="visitor">{{answer}}</li>
-      </ul>
-
-    {% endfor %}
-    
-    {% endif %}
-
-  </div>
   
 {% endblock %}

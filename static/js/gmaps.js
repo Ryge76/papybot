@@ -1,31 +1,9 @@
-// get api key from environnement
-const mapsKey = process.env.GMAPS_KEY
-
-// create <li> element to be added
-const createListElt = (content, from) => {
-  let liElt = document.createElement("li");
-
-  if (from === 'robot') {
-    liElt.classList.add("robot");
-  }
-  else {
-    liElt.classList.add("visitor");
-  }
-  
-  liElt.textContent = content;
-  return liElt
-}
-
-// include element
-const addToChat = (element) => {
-  let chatElt = document.getElementById("test");
-  chatElt.insertAdjacentElement("afterbegin", element);
-}
-
 // function that creates a <div> element to hold a map
 const createMapElt = () => {
+  console.log("Creation de l'élément html contenant la carte.");
   let mapElt = document.createElement("div");
   mapElt.classList.add("map");
+  console.log("Creation de l'élément html achevée.");
   return mapElt
 }
 
@@ -47,11 +25,14 @@ const getCoordinates = (query) => {
     }
   }
 
-// function creating map
+// function creating map inside a div element with class 'map'
+// Require an Object with coordinates lng/lat.
 const createMap = (queryCoord) => {
+  console.log("Creation de carte.");
   let elt = createMapElt();
-  let map = new google.maps.Map(elt, { center: queryCoord, zoom: 8 });
-  let marker = new google.maps.Marker({ map: map, position: queryCoord });
+  let map = new google.maps.Map(elt, { center: queryCoord, zoom: 15});
+  let marker = new google.maps.Marker({position: queryCoord, map: map})
+  console.log("Creation de carte achevée.");
   return elt
 }
 
@@ -63,44 +44,6 @@ const gmapsCall = (query) => {
   return {elt:mapElt, address:coordinates['queryAddress']}
 }
 
-// faire un appel
 
-// récupérer le texte et l'inclure
+export {gmapsCall, createMap, getCoordinates}
 
-
-// récupérer la carte et l'inclure
-
-
-
-
-
-fetch("https://maps.googleapis.com/maps/api/js?key=mapsKey&callback=initMap")
-
-export {gmapsCall, mapsKey, createMap, getCoordinates, createMapElt}
-
-
-
-
-// let geocoder
-// let map
-// function initialize() {
-//   geocoder = new google.maps.Geocoder();
-//   var latlng = new google.maps.LatLng(-34.397, 150.644);
-//   var mapOptions = {
-//     zoom: 8,
-//     center: latlng
-//   }
-//   map = new google.maps.Map(document.getElementById('map'), mapOptions);
-// }
-
-/*
-{
- address: string,
- location: LatLng,
- placeId: string,
- bounds: LatLngBounds,
- componentRestrictions: GeocoderComponentRestrictions,
- region: string
-}
-
-*/
