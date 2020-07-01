@@ -9,3 +9,13 @@ body {
     width: 100%;
     /* margin: auto; */
 }
+
+.robot {
+    position: relative;
+    left: 50px;
+}
+
+.visitor {
+    position: relative;
+    right: 50px;
+}

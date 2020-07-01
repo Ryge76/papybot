@@ -16,16 +16,23 @@ class Gmaps:
 
     def get(self, query):
 
-        self.about_query = self.gmaps_service.geocode(query)
-        result = {'address': self.about_query[0].get('formatted_address'),
-                  'coord': self.about_query[0]['geometry'].get('location')}
+        try:
+            self.about_query = self.gmaps_service.geocode(query)
 
-        return result
+        except Exception as e:
+            raise Exception('Cette erreur de connexion est survenue => {}'.format(e))
+
+        else:
+            result = {'address': self.about_query[0].get('formatted_address'),
+                      'coord': self.about_query[0]['geometry'].get('location')}
+
+            return result
 
 
 def main():
-    test = Gmaps().get("Openclassrooms")
-    print(test)
+    map = Gmaps()
+    map.get('')
+    print(map.about_query)
 
 
 if __name__ == '__main__':
