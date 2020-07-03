@@ -1,6 +1,10 @@
-import os
-
 import googlemaps
+
+import os
+import logging
+
+# create maps logger as ml for short
+ml = logging.getLogger('components.maps')
 
 
 class Gmaps:
@@ -15,12 +19,15 @@ class Gmaps:
         self.about_query = []
 
     def get(self, query):
+        ml.info('Une géolocalisation de {} est lancée.'.format(query))
 
         try:
             self.about_query = self.gmaps_service.geocode(query)
 
         except Exception as e:
-            raise Exception('Cette erreur de connexion est survenue => {}'.format(e))
+            message = 'Cette erreur de connexion est survenue => {}'.format(e)
+            ml.error(message)
+            raise Exception(message)
 
         else:
             result = {'address': self.about_query[0].get('formatted_address'),

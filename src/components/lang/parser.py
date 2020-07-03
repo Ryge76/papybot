@@ -3,8 +3,8 @@ import logging
 
 # create parser logger as pl for short
 pl = logging.getLogger('components.parser')
-pl.info("spacy initialized")
 nlp = fr_core_news_sm.load()
+pl.info("spacy initialized")
 
 # TODO  fix logger and replace print statements
 

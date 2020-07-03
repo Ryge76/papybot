@@ -1,5 +1,9 @@
 import requests
 
+import logging
+
+wl = logging.getLogger('components.wikipedia')
+
 
 class Wikipedia:
     """Access wikipedia API for search on name. Requiere a string for instanciation.
@@ -32,18 +36,34 @@ class Wikipedia:
         }
 
         self.query = query
+        if len(self.query) == 0:
+            wl.error('Mauvaise initiation de la recherche.')
+            raise ValueError("Au moins un mot-clé est nécessaire pour lancer "
+                             "la recherche")
+
         self.session = requests.Session()
-        result_page_id = self.find_page_id()
-        self.infos = self.get_infos(result_page_id)
+        result_page_id = self._find_page_id()
+        self.infos = self._get_infos(result_page_id)
 
-    def call_api(self, params):
+    def _call_api(self, params):
         """Call wikipedia api with specific parameters"""
-        response = self.session.get(url=self.URL, params=params)
-        data = response.json()
+        try:
+            response = self.session.get(url=self.URL, params=params)
+        except requests.exceptions.RequestException as e:
+            message = 'Une erreur de connexion est survenue => {}'.format(e)
+            wl.error(message)
 
-        return data
+        else:
+            if response.status_code == requests.codes.ok:
+                try:
+                    data = response.json()
+                except requests.exceptions.ContentDecodingError as e:
+                    message = 'Problème avec le JSON reçu => {}'.format(e)
+                    wl.error(message)
+                else:
+                    return data
 
-    def find_page_id(self):
+    def _find_page_id(self):
         """Get id of the first page corresponding to the query. Return an
         integer corresponding to the page id"""
 
@@ -51,13 +71,13 @@ class Wikipedia:
         self.global_search_params.update({"srsearch": self.query})
 
         # call to wikipedia API
-        data = self.call_api(self.global_search_params)
+        data = self._call_api(self.global_search_params)
 
         page_id = data['query']['search'][0].get('pageid')
 
         return page_id
 
-    def get_infos(self, page_id):
+    def _get_infos(self, page_id):
         """Get extract of a specific page. Require a page id. Return a dict
         containing page extract and url.
         ."""
@@ -66,7 +86,7 @@ class Wikipedia:
         self.page_search_params.update({"pageids": page_id})
 
         # call to wikipedia API
-        data = self.call_api(self.page_search_params)
+        data = self._call_api(self.page_search_params)
 
         extract = data['query']['pages'][str(page_id)].get('extract')
         page_url = data['query']['pages'][str(page_id)].get('fullurl')
