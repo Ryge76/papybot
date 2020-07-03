@@ -30,9 +30,9 @@ class Gmaps:
 
 
 def main():
-    map = Gmaps()
-    map.get('')
-    print(map.about_query)
+    location = Gmaps()
+    result = location.get('Openclassrooms')
+    print(result)
 
 
 if __name__ == '__main__':

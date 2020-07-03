@@ -1,10 +1,9 @@
-from flask import render_template, request, make_response, jsonify
-from .config import GMAPS_KEY
-from . import create_app
+from flask import render_template, request, jsonify
 
-from .components.lang import parser
-from .components.api import maps
-from .components.api import wikipedia
+from src.config import GMAPS_KEY
+from . import create_app
+from src.components.lang import parser
+from src.components.api import wikipedia, maps
 
 app = create_app()
 
@@ -51,7 +50,8 @@ def search():
                                      "wikipedia": wikipedia_search.infos,
                                      "searched_word": analysis.locations[0]})
 
-        # take a bet and search for the first entity found in input on Wikipedia
+        # take a bet and search for the first entity found in input
+        # on Wikipedia
         else:
             if len(analysis.entities) != 0:
                 wikipedia_search = api_call[1](analysis.entities[0].text)
