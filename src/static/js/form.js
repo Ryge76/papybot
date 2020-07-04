@@ -3,8 +3,9 @@ import {createMap} from './gmaps.js';
 const formElt = document.getElementById("query");
 const waitElt = document.getElementById("wait");
 const questionListElt = document.getElementById("chat");
-const visitorClasses = ["visitor", "my-md-2", "list-group-item", "list-group-item-warning"];
-const robotClasses = ["robot", "my-md-2", "list-group-item", "list-group-item-success"];
+const visitorClasses = ["visitor", "shadow", "my-md-2", "list-group-item", "list-group-item-warning"];
+const robotClasses = ["robot", "shadow", "my-md-2", "text-right", "list-group-item", "list-group-item-success"];
+const robotAlertClasses = ["robot", "shadow", "my-md-2", "text-right", "list-group-item", "list-group-item-danger"];
 
 // create <li> element to be added
 const createListElt = (content, classTags) => {
@@ -102,7 +103,7 @@ formElt.addEventListener("submit", function(e) {
 
             if (answer['rephrase']) {
                 sentence += "Désolé, je n'ai pas compris ta demande... \n Pourrais-tu la reformuler autrement ? \n";
-                return addTextToChat(sentence, robotClasses);
+                return addTextToChat(sentence, robotAlertClasses);
             }
 
             // TODO: function to generate various ok response
@@ -115,7 +116,7 @@ formElt.addEventListener("submit", function(e) {
         })
         .catch((error) => {
             waitElt.classList.toggle("invisible");
-            addTextToChat("Je suis désolé, ma réflexion n'a pas abouti...", robotClasses);
+            addTextToChat("Je suis désolé, ma réflexion n'a pas abouti... Peux tu reformuler ta demande ?", robotAlertClasses);
             console.error("Quelque chose s'est mal passé: ", error);
         })
         .finally(() => {

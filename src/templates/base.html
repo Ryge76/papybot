@@ -18,7 +18,7 @@
     <body>
 
         <!-- top navigation bar -->
-        <div class="navbar navbar-light container-fluid" style="background-color: #85b3d7" role="navigation">
+        <div class="navbar navbar-light shadow mb-2 container-fluid" style="background-color: #85b3d7" role="navigation">
             <div class="row">
                 <a class="navbar-brand col" href="/" id="top">Papybot</a>
                 <form id="query" class="form-inline">
@@ -31,13 +31,14 @@
         </div>
 
         <!-- integration of other pages -->
-        <div id="main" class="container">
-            
+        <div id="main" class="container vh-75 mb-2">
+
             {% block content %}{% endblock %}
 
         </div>
 
-        <footer class="navbar fixed-bottom container-fluid" style="background-color: #85b3d7" role="navigation">
+        <!-- bottom navigation bar -->
+        <footer class="navbar container-fluid" role="navigation">
             <div class="row">
                 <a class="navbar-brand col-md-4" href="#top">Accueil</a>
                 <section class="col-md-4">

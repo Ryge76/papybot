@@ -1,9 +1,9 @@
 from flask import render_template, request, jsonify
 
-from src.config import GMAPS_KEY
+from .config import GMAPS_KEY
 from . import create_app
-from src.components.lang import parser
-from src.components.api import wikipedia, maps
+from .components.lang import parser
+from .components.api import wikipedia, maps
 
 app = create_app()
 

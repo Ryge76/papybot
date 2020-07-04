@@ -1,13 +1,23 @@
-/* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
+html {
+    height: 100%;
+}
+
 body {
     background-color: #d2e8f5;
+    min-height: 100%;
+}
+
+footer {
+    background-color: #85b3d7;
+    position: relative;
+    top: 100vh;
 }
 
 .map {
+    position: relative;
+    left: 50px;
     height: 400px;
     width: 100%;
-    /* margin: auto; */
 }
 
 .robot {
