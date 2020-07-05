@@ -1,5 +1,5 @@
 import pytest
-from ..src.components.api.wikipedia import Wikipedia
+from ...src.components.api.wikipedia import Wikipedia
 
 
 # Check that Wikipedia class throw exceptions on instantiation errors

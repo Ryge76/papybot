@@ -1,5 +1,5 @@
 import pytest
-from ..src.components.api.maps import Gmaps
+from ...src.components.api.maps import Gmaps
 
 
 # Global class test

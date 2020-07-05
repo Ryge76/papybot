@@ -42,8 +42,8 @@ class Wikipedia:
                              "la recherche")
 
         self.session = requests.Session()
-        result_page_id = self._find_page_id()
-        self.infos = self._get_infos(result_page_id)
+        self.result_page_id = self._find_page_id()
+        self.infos = self._get_infos(self.result_page_id)
 
     def _call_api(self, params):
         """Call wikipedia api with specific parameters"""
@@ -96,6 +96,7 @@ class Wikipedia:
 
 def main():
     test_search = Wikipedia("Paris")
+    print(test_search.result_page_id)
     print("Extrait: \n {a} \n Lien: {b}".format(a=test_search.infos.get(
         "extract"), b=test_search.infos.get("url")))
 
