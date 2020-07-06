@@ -18,7 +18,7 @@ class Wikipedia:
             "format": "json",
             "list": "search",
             "utf8": 1,
-            "srsearch": "",
+            "srsearch": None,
             "srenablerewrites": 1,
             "srsort": "relevance"
         }
@@ -27,7 +27,7 @@ class Wikipedia:
             "action": "query",
             "format": "json",
             "prop": "extracts|info",
-            "pageids": "",
+            "pageids": None,
             "utf8": 1,
             "exsentences": "3",
             "exintro": 1,
@@ -48,20 +48,42 @@ class Wikipedia:
     def _call_api(self, params):
         """Call wikipedia api with specific parameters"""
         try:
-            response = self.session.get(url=self.URL, params=params)
+            response = self.session.get(url=self.URL, params=params,
+                                        timeout=5)
+
         except requests.exceptions.RequestException as e:
             message = 'Une erreur de connexion est survenue => {}'.format(e)
-            wl.error(message)
+            wl.exception(message)
 
         else:
+
             if response.status_code == requests.codes.ok:
                 try:
+                    # Requests can fail decoding the json
                     data = response.json()
+
                 except requests.exceptions.ContentDecodingError as e:
                     message = 'Problème avec le JSON reçu => {}'.format(e)
-                    wl.error(message)
+                    wl.exception(message)
+
                 else:
-                    return data
+                    # Wikipedia send back a json with a error section in
+                    # case of bad request. But the http code is still 200...
+                    if "error" in data.keys():
+                        wl.error("Le serveur Wikipedia indique une erreur"
+                                 " => {}".format(data.get('error')))
+                        raise requests.exceptions.HTTPError
+
+                    else:
+                        return data
+
+            else:
+                try:
+                    response.raise_for_status()
+                except requests.exceptions.HTTPError as e:
+                    message = "Le serveur wikipedia a répondu avec le code" \
+                              " {} => {}".format(response.status_code, e)
+                    wl.exception(message)
 
     def _find_page_id(self):
         """Get id of the first page corresponding to the query. Return an
@@ -71,11 +93,15 @@ class Wikipedia:
         self.global_search_params.update({"srsearch": self.query})
 
         # call to wikipedia API
-        data = self._call_api(self.global_search_params)
+        try:
+            data = self._call_api(self.global_search_params)
 
-        page_id = data['query']['search'][0].get('pageid')
+        except requests.exceptions.RequestException as e:
+            pass
 
-        return page_id
+        else:
+            page_id = data['query']['search'][0].get('pageid')
+            return page_id
 
     def _get_infos(self, page_id):
         """Get extract of a specific page. Require a page id. Return a dict
@@ -86,19 +112,24 @@ class Wikipedia:
         self.page_search_params.update({"pageids": page_id})
 
         # call to wikipedia API
-        data = self._call_api(self.page_search_params)
+        try:
+            data = self._call_api(self.page_search_params)
 
-        extract = data['query']['pages'][str(page_id)].get('extract')
-        page_url = data['query']['pages'][str(page_id)].get('fullurl')
+        except Exception as e:
+            pass
 
-        return {"extract": extract, "url": page_url}
+        else:
+            extract = data['query']['pages'][str(page_id)].get('extract')
+            page_url = data['query']['pages'][str(page_id)].get('fullurl')
+
+            return {"extract": extract, "url": page_url}
 
 
 def main():
-    test_search = Wikipedia("Paris")
-    print(test_search.result_page_id)
-    print("Extrait: \n {a} \n Lien: {b}".format(a=test_search.infos.get(
-        "extract"), b=test_search.infos.get("url")))
+    test_search = Wikipedia("")
+    # print(test_search.result_page_id)
+    # print("Extrait: \n {a} \n Lien: {b}".format(a=test_search.infos.get(
+    #     "extract"), b=test_search.infos.get("url")))
 
 
 if __name__ == '__main__':
