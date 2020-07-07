@@ -1,6 +1,6 @@
 import pytest
 import requests
-from src.components.api.wikipedia import Wikipedia
+from src.components.api.wikipedia import Wikipedia, WikipediaModuleError
 
 
 @pytest.fixture(scope='module')
@@ -16,7 +16,7 @@ def test_wikipedia_instance_creation_missing_arg():
 
 
 def test_wikipedia_instance_empty_query_error():
-    with pytest.raises(ValueError):
+    with pytest.raises(WikipediaModuleError):
         Wikipedia('')
 
 
@@ -40,14 +40,14 @@ def test_call_api_error_handling(test_instance):
 
 
 # Check handling of error in the response from wikipedia API
-@pytest.mark.xfail(reason='Exception handled')
+# @pytest.mark.xfail(reason='Exception handled')
 def test_call_api_http_error(test_instance):
     test_parameters_for_call = {
             "action": "fake_action",
             "format": "json"
         }
 
-    with pytest.raises(requests.exceptions.HTTPError):
+    with pytest.raises(WikipediaModuleError):
         test_instance._call_api(test_parameters_for_call)
 
 
