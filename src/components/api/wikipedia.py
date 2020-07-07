@@ -36,6 +36,7 @@ class Wikipedia:
         }
 
         self.query = query
+
         if len(self.query) == 0:
             wl.error('Mauvaise initiation de la recherche.')
             raise ValueError("Au moins un mot-clé est nécessaire pour lancer "
@@ -69,10 +70,13 @@ class Wikipedia:
                 else:
                     # Wikipedia send back a json with a error section in
                     # case of bad request. But the http code is still 200...
-                    if "error" in data.keys():
+                    try:
+                        if "error" in data.keys():
+                            raise requests.exceptions.HTTPError
+
+                    except requests.exceptions.HTTPError as e:
                         wl.error("Le serveur Wikipedia indique une erreur"
-                                 " => {}".format(data.get('error')))
-                        raise requests.exceptions.HTTPError
+                             " => {}. \n {}".format(data.get('error'), e))
 
                     else:
                         return data
