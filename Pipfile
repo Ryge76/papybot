@@ -9,6 +9,7 @@ selenium = "*"
 flask-debugtoolbar = "*"
 pylint = "*"
 python-dotenv = "*"
+pytest-cov = "*"
 
 [packages]
 flask = "*"

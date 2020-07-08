@@ -1,6 +1,28 @@
 import pytest
+import requests
 from src.components.api.wikipedia import Wikipedia
 
+
+def mock_requests_session():
+    # self.session = requests.Session().get(url)
+    # response = requests.Session().get(url)
+    # response.json()
+
+    class FakeSession:
+        def get(self, url, params, timeout):
+            pass
+
+        def json(self):
+            pass
+
+    return FakeSession()
+
+def mock_wikipedia_instance(monckeypatch):
+    class Wikipedia:
+        def __init__(self, query):
+            monckeypatch.setattr('.requests.Session', mock_requests_session)
+            self.session = request.Session()
+            self.URL = 'http://'
 
 @pytest.fixture(scope='module')
 def test_instance():
@@ -30,6 +52,7 @@ def test_find_page_id(test_instance):
     assert test_instance.result_page_id == expected_id
 
 
+
 # Should return a dictionnary containing the url and extract of a page,
 # given its ID
 def test_get_infos(test_instance, page_id=681159):
@@ -55,3 +78,4 @@ def test_api_call(test_instance):
 
     data = test_instance._call_api(custom_params)
     assert isinstance(data, dict)
+    assert 'query' in data.keys()

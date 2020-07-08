@@ -52,7 +52,8 @@ class Wikipedia:
         self.infos = self._get_infos(self.result_page_id)
 
     def _call_api(self, params):
-        """Call wikipedia api with specific parameters"""
+        """Call wikipedia api with specific parameters
+        Return a dict containing the API response."""
 
         # Check connection to Wikipedia API
         try:
@@ -66,7 +67,7 @@ class Wikipedia:
 
         else:
             # Check answer'status from API
-            if response.status_code == requests.codes.ok:
+            if response.status_code == requests.codes.OK:
                 try:
                     # Check if Requests can decode the json
                     data = response.json()
@@ -100,8 +101,8 @@ class Wikipedia:
                     raise WikipediaModuleError
 
     def _find_page_id(self):
-        """Get id of the first page corresponding to the query. Return an
-        integer corresponding to the page id"""
+        """Get id of the first page corresponding to the query. 
+        Return an integer corresponding to the page id"""
 
         # add query to parameters for the api call
         self.global_search_params.update({"srsearch": self.query})
@@ -118,8 +119,9 @@ class Wikipedia:
             return page_id
 
     def _get_infos(self, page_id):
-        """Get extract of a specific page. Require a page id. Return a dict
-        containing page extract and url.
+        """Get extract of a specific page. 
+        Require a page id. 
+        Return a dict containing page extract and url.
         ."""
 
         # add page id to parameters for the api call
