@@ -4,6 +4,8 @@ import requests
 from src.components.api.wikipedia import Wikipedia
 
 
+# ---- Defining fixtures and mocks used for testing ---- #
+
 def mock_requests_session():
     """ Create fake session object to mock response from API call """
     class FakeSession:
@@ -39,31 +41,30 @@ def global_test_instance():
     return test_instance
 
 
+# ----- Tests ------ #
+
 # Gloabal test of Wikipedia class
-# Attribute 'infos' should contains url and extract of the page related to the
-# query
 def test_wikipedia_instance(global_test_instance):
-    """Test if Wikipedia class has a non empty dict in its 'infos' attribute
-    (thus succeeded in making the call to the API)"""
+    """Test if Wikipedia instance have a 'infos' attribute
+    containing url and extract of the page related to the query."""
 
     expected_extract = "Paris [pa.ʁi]  est la ville la plus peuplée et la capitale de la France.\nElle se situe au cœur d'un vaste bassin sédimentaire aux sols fertiles et au climat tempéré, le bassin parisien, sur une boucle de la Seine, entre les confluents de celle-ci avec la Marne et l'Oise. Paris est également le chef-lieu de la région Île-de-France et le centre de la métropole du Grand Paris, créée en 2016."
 
     assert global_test_instance.infos.get('url') == 'https://fr.wikipedia.org/wiki/Paris'
     assert global_test_instance.infos.get('extract') == expected_extract
 
+
 # Following are tests of internal methods of Wikipedia class
-
-
-# Should return and the integer id of 'Paris' page in Wikipedia
 def test_find_page_id_for_specific_location(global_test_instance):
+    """Should return and the integer id of 'Paris' page in Wikipedia"""
     expected_id = 681159
 
     assert global_test_instance.result_page_id == expected_id
 
 
-# Should return a dictionnary containing the url and extract of a page,
-# given its ID
 def test_get_infos_for_specific_location(global_test_instance, page_id=681159):
+    """Should return a dictionnary containing the url and extract of a page,
+    given its ID"""
     collected_info = global_test_instance._get_infos(page_id)
     expected_extract = "Paris [pa.ʁi]  est la ville la plus peuplée et la capitale de la France.\nElle se situe au cœur d'un vaste bassin sédimentaire aux sols fertiles et au climat tempéré, le bassin parisien, sur une boucle de la Seine, entre les confluents de celle-ci avec la Marne et l'Oise. Paris est également le chef-lieu de la région Île-de-France et le centre de la métropole du Grand Paris, créée en 2016."
 
@@ -72,7 +73,6 @@ def test_get_infos_for_specific_location(global_test_instance, page_id=681159):
     assert collected_info.get('extract') == expected_extract
 
 
-# test of internal method of Wikipedia class
 def test_api_call_for_specific_location(global_test_instance):
     custom_params = {
         "action": "query",
@@ -89,8 +89,9 @@ def test_api_call_for_specific_location(global_test_instance):
     assert 'query' in data.keys()
 
 
-# test of internal method of Wikipedia class
-def test_api_call_on_fake_instance(mock_wikipedia_instance):
+def test_api_call_on_mock_instance(mock_wikipedia_instance):
+    """Should return a dictionnary containing a 'status' key with a success
+    message."""
     custom_params = {
         "action": "whatever"
     }
