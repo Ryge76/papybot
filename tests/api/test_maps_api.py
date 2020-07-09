@@ -25,7 +25,7 @@ def fake_gmaps_instance(mock_googlemaps):
     return FakeGmaps()
 
 
-# ---- Test ---- #
+# ---- Tests ---- #
 
 # Global class test
 def test_maps_api():
