@@ -22,9 +22,9 @@ def test_wikipedia_instance_empty_query_error():
 
 # Check handling or failing connection from wikipedia API
 @pytest.mark.xfail(reason='Exception handled')
-def test_call_api_error_handling(test_instance):
+def test_call_api_error_handling(global_test_instance):
     # modify URL of the test instance
-    test_instance.URL = 'http://fake-address.io'
+    global_test_instance.URL = 'http://fake-address.io'
 
     test_parameters_for_call = {
             "action": "query",
@@ -36,18 +36,18 @@ def test_call_api_error_handling(test_instance):
             "srsort": "relevance"
         }
     with pytest.raises(requests.exceptions.RequestException):
-        test_instance._call_api(test_parameters_for_call)
+        global_test_instance._call_api(test_parameters_for_call)
 
 
 # Check handling of error in the response from wikipedia API
 # @pytest.mark.xfail(reason='Exception handled')
-def test_call_api_http_error(test_instance):
+def test_call_api_http_error(global_test_instance):
     test_parameters_for_call = {
             "action": "fake_action",
             "format": "json"
         }
 
     with pytest.raises(WikipediaModuleError):
-        test_instance._call_api(test_parameters_for_call)
+        global_test_instance._call_api(test_parameters_for_call)
 
 
