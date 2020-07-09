@@ -9,7 +9,7 @@ ml = logging.getLogger('components.maps')
 
 class Gmaps:
     """Use Google Maps API to get address and coordinates upon search.
-    Requiere a string query. Return a dictionary address and coordinates."""
+    Return a dictionary address and coordinates."""
 
     GMAPS_KEY = os.environ.get("GMAPS_KEY")
 
@@ -19,7 +19,7 @@ class Gmaps:
         self.about_query = []
 
     def get(self, query):
-        ml.info('Une géolocalisation de {} est lancée.'.format(query))
+        ml.info('La géolocalisation de {} est lancée.'.format(query))
 
         try:
             self.about_query = self.gmaps_service.geocode(query)
