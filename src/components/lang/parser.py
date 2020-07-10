@@ -141,7 +141,8 @@ class Analyze:
 
 
 def main():
-    test = Analyze("Salut GrandPy ! Est-ce que tu connais l'adresse d'OpenClassrooms ?")
+    test = Analyze("Salut GrandPy ! Est ce que tu connais l'adresse "
+                   "d'OpenClassrooms ?")
     test.check_greetings()
     test.get_entities()
     test.check_location()
