@@ -56,7 +56,7 @@ class Analyze:
         else:
             return False
 
-    def __init__(self, sentence):
+    def __init__(self, sentence, auto=False):
         self.locations = []  # list of location entities in sentence
         self.found_locations = False
         self.travel_verbs = []  # list of travel verbs in sentence
@@ -67,7 +67,12 @@ class Analyze:
 
         self.doc = nlp(sentence)
         self.entities = self.doc.ents
-        self.get_valuable_info()
+
+        if auto:
+            self.get_valuable_info()
+            self.check_greetings()
+            self.check_location()
+            self.check_travel_verb()
 
     def get_entities(self):
         print("\n Nombre d'entités trouvées: {}.".format(len(self.entities)))
@@ -144,6 +149,7 @@ def main():
     test = Analyze("Salut GrandPy ! Est ce que tu connais l'adresse "
                    "d'OpenClassrooms ?")
     test.check_greetings()
+    print("Valeur de found_greetings: ", test.found_greetings)
     test.get_entities()
     test.check_location()
     test.check_travel_verb()

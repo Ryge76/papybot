@@ -29,7 +29,7 @@ def search():
     if request.method == 'POST':
         user_input = request.get_json().get('query')
         print("L'utilisateur demande: '{}'".format(user_input))
-        analysis = parser.Analyze(user_input)
+        analysis = parser.Analyze(user_input, auto=True)
 
         # take action depending on the parsing results. Whether calling
         # Wikipedia or/and Google Maps API
@@ -67,8 +67,6 @@ def search():
             analysis_results.update({"rephrase": True})
 
         print(analysis_results)
-        # response = make_response(analysis_results)
-        # response.headers.update({'Content-type': 'application/json'})
 
     return jsonify(analysis_results)
 
