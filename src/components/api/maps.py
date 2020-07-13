@@ -14,7 +14,7 @@ class GmapsModuleError(Exception):
 
 class Gmaps:
     """Use Google Maps API to get address and coordinates upon search.
-    Return a dictionary address and coordinates."""
+    Return a dictionary containing address and coordinates."""
 
     GMAPS_KEY = os.environ.get("GMAPS_KEY")
     URL = "https://maps.googleapis.com/maps/api/geocode/json"
