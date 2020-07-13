@@ -1,7 +1,7 @@
 import pytest
 import requests
 
-from src.components.api.wikipedia import Wikipedia
+from ...src.components.api.wikipedia import Wikipedia
 
 
 # ---- Defining fixtures and mocks used for testing ---- #

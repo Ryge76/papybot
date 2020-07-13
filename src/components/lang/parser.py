@@ -6,8 +6,6 @@ pl = logging.getLogger('components.parser')
 nlp = fr_core_news_sm.load()
 pl.info("spacy initialized")
 
-# TODO  fix logger and replace print statements
-
 
 class Analyze:
     """Analyze sentence given in parameter during instantiation. """
@@ -49,7 +47,7 @@ class Analyze:
                         "se déplacer", "se promener", "se transporter",
                         "sillonner",
                         "transhumer", "vagabonder", "visiter", "voyager",
-                        "se promoner", "se rendre")
+                        "se promoner", "se rendre", "voir")
 
         if verb_token.lemma_ in target_verbs:
             return True
@@ -83,7 +81,6 @@ class Analyze:
         """"Get only tokens that are not punctuation marks or part of the
         stopwords list."""
 
-        # TODO TryExcept pour phrase vide
         self.valuable_info = [token for token in self.doc if not (
                 token.is_stop or token.is_punct)]
         print("\n Phrase initiale: {a}. \n Mots retenus: {b}".format(
@@ -126,15 +123,16 @@ class Analyze:
         verbs_only = [token for token in self.valuable_info
                       if token.pos_ == "VERB"]
 
-        for token in verbs_only:
-            verb = self.is_travel_verb(token)
-            if verb:
-                pl.info("{} fait partie des verbes nécessitant une recherche "
-                        "sur carte.".format(token.lemma_))
-                self.travel_verbs.append(token)
-                self.found_travel_verbs = True
+        if verbs_only:
+            for token in verbs_only:
+                verb = self.is_travel_verb(token)
+                if verb:
+                    pl.info("{} fait partie des verbes nécessitant une recherche "
+                            "sur carte.".format(token.lemma_))
+                    self.travel_verbs.append(token)
+                    self.found_travel_verbs = True
 
-        print("Verbe(s) trouvé(s): {} ".format(self.travel_verbs))
+            print("Verbe(s) trouvé(s): {} ".format(self.travel_verbs))
 
     def parse_noun_chunks(self):
         """Parse sentence to get noun chunks and their roots."""
@@ -146,14 +144,9 @@ class Analyze:
 
 
 def main():
-    test = Analyze("Salut GrandPy ! Est ce que tu connais l'adresse "
-                   "d'OpenClassrooms ?")
-    test.check_greetings()
-    print("Valeur de found_greetings: ", test.found_greetings)
-    test.get_entities()
-    test.check_location()
-    test.check_travel_verb()
-    test.parse_noun_chunks()
+
+    Analyze("Salut GrandPy ! Est ce que tu connais l'adresse "
+                   "d'OpenClassrooms ?", True)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 import pytest
 import requests
-from src.components.api.wikipedia import Wikipedia, WikipediaModuleError
+from ...src.components.api.wikipedia import Wikipedia, WikipediaModuleError
 
 
 # ---- Defining fixtures and mocks used for testing ---- #
