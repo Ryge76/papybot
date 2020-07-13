@@ -1,7 +1,7 @@
 import requests
 import pytest
 
-from ...src.components.api.maps import MyGmaps
+from ...src.components.api.maps import Gmaps
 
 # ---- Defining fixtures and mock for testing ---- #
 
@@ -80,15 +80,16 @@ def mock_response():
 
 
 # ---- tests ---- #
+
 @pytest.mark.xfail(reason='Test failing for formatting reasons but content is '
                           'as expected.')
 def test_call_api_():
     """Should return a response object with status 200."""
 
     custom_params = {'address': 'pont de brotonne',
-                     'key': MyGmaps.GMAPS_KEY}
+                     'key': Gmaps.GMAPS_KEY}
 
-    result = MyGmaps()._call_api(custom_params)
+    result = Gmaps()._call_api(custom_params)
 
     expected_result = sample_response
 
@@ -98,14 +99,14 @@ def test_call_api_():
 def test_find():
     """Should return a dict containing valid 'address' and 'coord' keys. """
     test_query = "pont de brotonne"
-    result = MyGmaps().find(test_query)
+    result = Gmaps().find(test_query)
 
     assert result['address'] == "Pont de Brotonne, 76490 Rives-en-Seine, France"
     assert result['coord'] == {"lat": 49.5205268, "lng": 0.7472835}
 
 
 def test_extract_result(mock_response):
-    result = MyGmaps()._extract_result(mock_response)
+    result = Gmaps()._extract_result(mock_response)
 
     expected_result = {'address': "Pont de Brotonne, 76490 Rives-en-Seine, "
                                   "France",

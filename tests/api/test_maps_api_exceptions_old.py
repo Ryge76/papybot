@@ -18,7 +18,7 @@ def mock_gmaps_class_with_wrong_key():
 # Global class exception check
 def test_empty_query_error():
     with pytest.raises(GmapsModuleError):
-        Gmaps().get('')
+        Gmaps().find('')
 
 
 # test missing or wrong API key
