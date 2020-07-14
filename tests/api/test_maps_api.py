@@ -113,3 +113,4 @@ def test_extract_result(mock_response):
                        'coord': {"lat": 49.5205268, "lng": 0.7472835}}
 
     assert result == expected_result
+

@@ -1,4 +1,6 @@
 import pytest
+import requests.exceptions
+
 from ...src.components.api.maps import Gmaps, GmapsModuleError
 
 
@@ -22,8 +24,15 @@ def test_empty_query_error():
 
 
 # test missing or wrong API key
-def test_bad_api_key_error(mock_gmaps_class_with_wrong_key):
+def test_bad_api_key_error():
+    fake_key = "123456789ABCDEF"
+    test_parameters = {'key': fake_key}
+
+    test_instance = Gmaps()
+    test_instance.parameters.update(test_parameters)
+
     with pytest.raises(GmapsModuleError):
-        mock_gmaps_class_with_wrong_key()
+        test_instance.find('Paris')
+
 
 

@@ -37,7 +37,7 @@ class Gmaps:
         except requests.exceptions.RequestException as e:
             message = 'Une erreur de connexion est survenue => {}'.format(e)
             ml.exception(message)
-            raise GmapsModuleError
+            raise
 
         else:
             try:
@@ -49,12 +49,18 @@ class Gmaps:
                 raise
 
             else:
-                return response
+                if "error_message" in response.text:
+                    ml.error("Message d'erreur contenu dans la réponse.")
+                    raise requests.exceptions.HTTPError("Message d'erreur "
+                                                        "retourné dans la "
+                                                        "réponse.")
+
+                else:
+                    return response
 
     def find(self, query):
         """Get coordinates and address of the place in query.
         Require string. Return a dict."""
-
 
         self.parameters.update({'address': query})
 
@@ -72,6 +78,9 @@ class Gmaps:
             raise GmapsModuleError
 
         except KeyError:
+            raise GmapsModuleError
+
+        except IndexError:
             raise GmapsModuleError
 
         except Exception:
@@ -100,6 +109,10 @@ class Gmaps:
                            'coord': source['results'][0]['geometry'].get('location')}
 
             except KeyError as e:
+                ml.exception(e)
+                raise
+
+            except IndexError as e:
                 ml.exception(e)
                 raise
 
