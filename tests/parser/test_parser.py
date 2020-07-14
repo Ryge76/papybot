@@ -45,7 +45,7 @@ def test_parser_on_sample_sentence():
 
     sample = "Salut Grandpy ! Est ce que tu connais l'adresse " \
              "d'Openclassrooms ?"
-    result = Analyze(sample, True)
+    result = Analyze(sample)
 
     # spacy library parse and convert any sentence in tokens objects with a
     # text attribute containing the word it represents in the sentence.
@@ -139,7 +139,7 @@ def test_is_travel_verb_return_false(mock_token, checklist):
 def test_get_entities_return_entities(capsys):
     """Should find 2 entities in the sample sentence"""
     test = Analyze("Salut GrandPy ! Est ce que tu connais l'adresse "
-            "d'OpenClassrooms ?")
+            "d'OpenClassrooms ?", auto=False)
 
     test.get_entities()
     out, err = capsys.readouterr()
@@ -151,7 +151,7 @@ def test_get_entities_return_entities(capsys):
 
 
 def test_get_valuable_info(capsys):
-    test = Analyze("Où se trouve la Tour Eiffel ?")
+    test = Analyze("Où se trouve la Tour Eiffel ?", auto=False)
 
     expected_outcome = "\n Phrase initiale: Où se trouve la Tour Eiffel ?. " \
                        "\n Mots retenus: [trouve, Tour, Eiffel]\n"
@@ -165,7 +165,7 @@ def test_get_valuable_info(capsys):
 def test_check_greetings_return_no_greetings(capsys):
     """Shouldn't find greetings word and have false for the greetings_found
     attribute."""
-    test = Analyze("Où se trouve la Tour Eiffel ?")
+    test = Analyze("Où se trouve la Tour Eiffel ?", auto=False)
 
     with capsys.disabled():
         test.get_valuable_info()  # prevent capture of the output of this step
@@ -180,7 +180,7 @@ def test_check_greetings_return_no_greetings(capsys):
 def test_check_greetings_find_greetings(capsys):
     """Should find a greeting word and have true for the greetings_found
     attribute."""
-    test = Analyze("Bonjour, où se trouve la Tour Eiffel ?")
+    test = Analyze("Bonjour, où se trouve la Tour Eiffel ?", auto=False)
 
     with capsys.disabled():
         test.get_valuable_info()  # prevent capture of the output of this step
@@ -194,7 +194,7 @@ def test_check_greetings_find_greetings(capsys):
 
 def test_check_location_not_found():
     """Shouldn't return any location"""
-    test = Analyze("Bonjour, comment ça va ?")
+    test = Analyze("Bonjour, comment ça va ?", auto=False)
     result = test.check_location()
 
     assert result == None
@@ -203,7 +203,7 @@ def test_check_location_not_found():
 
 def test_check_location_find_entities(capsys):
     """Should find the location in the sample sentence"""
-    test = Analyze("Où se trouve la Tour Eiffel ?")
+    test = Analyze("Où se trouve la Tour Eiffel ?", auto=False)
     test.check_location()
 
     out, err = capsys.readouterr()
@@ -215,7 +215,7 @@ def test_check_location_find_entities(capsys):
 
 def test_check_travel_verb_not_found():
     """Shouldn't find any verb related to a travel intention"""
-    test = Analyze("Je veux nager à la plage.")
+    test = Analyze("Je veux nager à la plage.", auto=False)
     test.get_valuable_info()
     result = test.check_travel_verb()
 
@@ -224,7 +224,7 @@ def test_check_travel_verb_not_found():
 
 def test_check_travel_verb_found(capsys):
     """Shouldn't find any verb related to a travel intention"""
-    test = Analyze("Je veux visiter Paris.")
+    test = Analyze("Je veux visiter Paris.", auto=False)
     with capsys.disabled():
         test.get_valuable_info()
 
@@ -239,7 +239,7 @@ def test_check_travel_verb_found(capsys):
 
 def test_parse_noun_chuncks(capsys):
     """Should find related noun chuncks."""
-    test = Analyze("Où se trouve la Tour Eiffel ?")
+    test = Analyze("Où se trouve la Tour Eiffel ?", auto=False)
     test.parse_noun_chunks()
 
     out, err = capsys.readouterr()

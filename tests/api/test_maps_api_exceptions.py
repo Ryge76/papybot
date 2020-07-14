@@ -6,14 +6,6 @@ from ...src.components.api.maps import Gmaps, GmapsModuleError
 
 # ---- Defining fixtures and mocks for testing ---- #
 
-@pytest.fixture()
-def mock_gmaps_class_with_wrong_key():
-    class FakeGmaps(Gmaps):
-        GMAPS_KEY = "BadKey"
-
-    return FakeGmaps
-
-
 # ---- Tests ---- #
 
 

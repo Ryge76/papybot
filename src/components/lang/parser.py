@@ -54,7 +54,7 @@ class Analyze:
         else:
             return False
 
-    def __init__(self, sentence, auto=False):
+    def __init__(self, sentence, auto=True):
         self.locations = []  # list of location entities in sentence
         self.found_locations = False
         self.travel_verbs = []  # list of travel verbs in sentence
@@ -146,7 +146,7 @@ class Analyze:
 def main():
 
     Analyze("Salut GrandPy ! Est ce que tu connais l'adresse "
-                   "d'OpenClassrooms ?", True)
+                   "d'OpenClassrooms ?")
 
 
 if __name__ == '__main__':

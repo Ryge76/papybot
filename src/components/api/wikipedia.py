@@ -17,7 +17,7 @@ class Wikipedia:
 
     URL = "https://fr.wikipedia.org/w/api.php"
 
-    def __init__(self, query):
+    def __init__(self, query, auto=True):
         self.global_search_params = {
             "action": "query",
             "format": "json",
@@ -48,12 +48,14 @@ class Wikipedia:
             raise WikipediaModuleError
 
         self.session = requests.Session()
-        self.result_page_id = self._find_page_id()
-        self.infos = self._get_infos(self.result_page_id)
+
+        if auto:
+            self.result_page_id = self._find_page_id()
+            self.infos = self._get_infos(self.result_page_id)
 
     def _call_api(self, params):
-        """Call wikipedia api with specific parameters
-        Return a dict containing the API response."""
+        """Call wikipedia api with specific parameters in argument
+        Return the API Response object."""
 
         # Check connection to Wikipedia API
         try:
@@ -63,42 +65,48 @@ class Wikipedia:
         except requests.exceptions.RequestException as e:
             message = 'Une erreur de connexion est survenue => {}'.format(e)
             wl.exception(message)
-            raise WikipediaModuleError
+            raise
 
         else:
-            # Check answer'status from API
-            if response.status_code == requests.codes.OK:
-                try:
-                    # Check if Requests can decode the json
-                    data = response.json()
+            # Check if response'status is 400 or 500 and raise an error
+            # accordingly
+            try:
+                response.raise_for_status()
 
-                except requests.exceptions.ContentDecodingError as e:
-                    message = 'Problème avec le JSON reçu => {}'.format(e)
-                    wl.exception(message)
-                    raise WikipediaModuleError
-
-                else:
-                    # Wikipedia send back a json with a error section in
-                    # case of bad request. But the http code is still 200...
-                    if "error" in data.keys():
-                        wl.error("Le serveur Wikipedia indique une erreur"
-                                 " => {}.".format(data.get('error')))
-                        raise WikipediaModuleError
-
-                    else:
-                        return data
+            except requests.exceptions.HTTPError as e:
+                message = "Le serveur wikipedia a répondu avec le code" \
+                          " {} => {}".format(response.status_code, e)
+                wl.exception(message)
+                raise
 
             else:
-                # Check if response'status is 400 or 500 and raise an error
-                # accordingly
-                try:
-                    response.raise_for_status()
+                return response
 
-                except requests.exceptions.HTTPError as e:
-                    message = "Le serveur wikipedia a répondu avec le code" \
-                              " {} => {}".format(response.status_code, e)
-                    wl.exception(message)
-                    raise WikipediaModuleError
+    @staticmethod
+    def _get_data_from_response(api_response):
+        """Extract the address and coordinates of the place located from the
+        response object.
+        Require a response object. Return a dict."""
+
+        try:
+            data = api_response.json()
+
+        except requests.exceptions.ContentDecodingError as e:
+            message = 'Problème avec le JSON reçu => {}'.format(e)
+            wl.exception(message)
+            raise
+
+        else:
+            # Wikipedia send back a json with a error section in
+            # case of bad request. But the http code is still 200...
+            if "error" in data.keys():
+                wl.error("Le serveur Wikipedia indique une erreur à "
+                         "l'intérieur de la réponse "
+                         "=> {}.".format(data.get('error')))
+                raise requests.exceptions.HTTPError
+
+            else:
+                return data
 
     def _find_page_id(self):
         """Get id of the first page corresponding to the query. 
@@ -109,14 +117,21 @@ class Wikipedia:
 
         # call to wikipedia API
         try:
-            data = self._call_api(self.global_search_params)
+            api_response = self._call_api(self.global_search_params)
 
         except requests.exceptions.RequestException:
             raise WikipediaModuleError
 
         else:
-            page_id = data['query']['search'][0].get('pageid')
-            return page_id
+            try:
+                data = self._get_data_from_response(api_response)
+
+            except requests.exceptions.RequestException:
+                raise WikipediaModuleError
+
+            else:
+                page_id = data['query']['search'][0].get('pageid')
+                return page_id
 
     def _get_infos(self, page_id):
         """Get extract of a specific page. 
@@ -129,17 +144,24 @@ class Wikipedia:
 
         # call to wikipedia API
         try:
-            data = self._call_api(self.page_search_params)
+            api_response = self._call_api(self.page_search_params)
 
         except requests.exceptions.RequestException as e:
             wl.exception(e)
             raise WikipediaModuleError
 
         else:
-            extract = data['query']['pages'][str(page_id)].get('extract')
-            page_url = data['query']['pages'][str(page_id)].get('fullurl')
+            try:
+                data = self._get_data_from_response(api_response)
 
-            return {"extract": extract, "url": page_url}
+            except requests.exceptions.RequestException:
+                raise WikipediaModuleError
+
+            else:
+                extract = data['query']['pages'][str(page_id)].get('extract')
+                page_url = data['query']['pages'][str(page_id)].get('fullurl')
+
+                return {"extract": extract, "url": page_url}
 
 
 def main():
