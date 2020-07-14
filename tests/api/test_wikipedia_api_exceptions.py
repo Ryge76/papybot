@@ -1,19 +1,36 @@
 import pytest
-import requests
+import requests.exceptions
 from ...src.components.api.wikipedia import Wikipedia, WikipediaModuleError
 
 
 # ---- Defining fixtures and mocks used for testing ---- #
 
-@pytest.fixture(scope='module')
-def global_test_instance():
-    """Create an instance initialized on a Paris search."""
-    test_instance = Wikipedia('Paris')
-    return test_instance
+sample_response_with_error = {"error":{"code":"badvalue","info":"Unrecognized value for parameter \"action\": fake_action.","*":"See https://fr.wikipedia.org/w/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/mailman/listinfo/mediawiki-api-announce&gt; for notice of API deprecations and breaking changes."},"servedby":"mw1345"}
+
+@pytest.fixture()
+def wikipedia_test_instance():
+    return Wikipedia('test', auto=False)
+
+
+@pytest.fixture()
+def mock_response():
+    """ Create fake response object. """
+
+    class FakeResponse:
+        def raise_for_status(self):
+            raise requests.exceptions.HTTPError
+
+        def get(self, url, params, timeout):
+            return self
+
+        def json(self):
+            return sample_response_with_error
+
+    return FakeResponse()
 
 
 def mock_requests_session():
-    """ Create fake session object to mock response from API call """
+    """ Create fake session object. """
     class FakeSession:
         def __init__(self):
             self.status_code = 400
@@ -25,23 +42,20 @@ def mock_requests_session():
             return self
 
         def json(self):
-            return {"status": "fake call succeeded !"}
+            return sample_response_with_error
 
     return FakeSession()
 
 
 @pytest.fixture()
-def mock_wikipedia_instance(monkeypatch):
-    """Create fake Wikipedia instance with session attribute containing a
+def mock_wiki_instance(monkeypatch):
+    """Create Wikipedia instance with 'session' attribute containing a
     mocked request.Session object"""
 
-    class FakeWikipedia(Wikipedia):
-        def __init__(self):
-            monkeypatch.setattr('requests.Session', mock_requests_session)
-            self.session = requests.Session()
-            self.URL = 'http://'
+    monkeypatch.setattr('requests.Session', mock_requests_session)
+    instance = Wikipedia('test', auto=False)
 
-    return FakeWikipedia()
+    return instance
 
 
 # ----- Tests --------- #
@@ -62,38 +76,34 @@ def test_wikipedia_instance_empty_query_error():
 
 
 # Check handling of failing connection to wikipedia API
-def test_call_api_error_handling(global_test_instance):
+def test_call_api_unreachable_api_error(wikipedia_test_instance):
     """Should raise o specific class error as requested site is unavailable"""
-    # modify URL of the test instance
-    global_test_instance.URL = 'http://fake-address.io'
+    # modify URL of the test instance to fake api out of reach
+    wikipedia_test_instance.URL = 'http://fake-address.io'
 
     test_parameters_for_call = {
             "action": "whatever"
         }
 
-    with pytest.raises(WikipediaModuleError):
-        global_test_instance._call_api(test_parameters_for_call)
+    with pytest.raises(requests.exceptions.RequestException):
+        wikipedia_test_instance._call_api(test_parameters_for_call)
 
 
 # Check handling of failing connection to wikipedia API
-def test_call_api_error_handling2(mock_wikipedia_instance):
+def test_call_api_http_error(mock_wiki_instance):
     """Should raise a Wkipedia Error since fake response.status.code is 400"""
     test_parameters_for_call = {
             "action": "whatever"
         }
 
-    with pytest.raises(WikipediaModuleError):
-        mock_wikipedia_instance._call_api(test_parameters_for_call)
+    with pytest.raises(requests.exceptions.HTTPError):
+        mock_wiki_instance._call_api(test_parameters_for_call)
 
 
 # Check handling of error in the response from wikipedia API
-def test_call_api_http_error(global_test_instance):
+def test_get_data_from_response_error(wikipedia_test_instance, mock_response):
     """Should raise a class specific error message as query to site is
     incorrect"""
-    test_parameters_for_call = {
-            "action": "fake_action",
-            "format": "json"
-        }
 
-    with pytest.raises(WikipediaModuleError):
-        global_test_instance._call_api(test_parameters_for_call)
+    with pytest.raises(requests.exceptions.HTTPError):
+        wikipedia_test_instance._get_data_from_response(mock_response)
