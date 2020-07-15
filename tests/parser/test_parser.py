@@ -6,11 +6,13 @@ from ...src.components.lang.parser import Analyze
 @pytest.fixture()
 def mock_token():
     class FakeToken:
-        def __init__(self, pos=None, lower=None, lemma=None, text=None):
+        def __init__(self, ent_type=None, pos=None, lower=None, lemma=None, \
+                                                               text=None):
             self.pos_ = pos
             self.lower_ = lower
             self.lemma_ = lemma
             self.text = text
+            self.ent_type_ = ent_type
 
     return FakeToken
 
@@ -53,7 +55,7 @@ def test_parser_on_sample_sentence():
     result_greetings = [token.text for token in result.greetings]
     result_locations = [token.text for token in result.locations]
 
-    expected_valuable_info = ["Salut", "Grandpy", "connais", "adresse",
+    expected_valuable_info = ["Salut", "connais", "adresse",
                               "Openclassrooms"]
     expected_greetings = ["Salut"]
     expected_locations = ["Openclassrooms"]
@@ -92,9 +94,9 @@ def test_is_greeting_return_false(mock_token, checklist):
 
 
 @pytest.mark.parametrize('checklist', ["LOC", "GPE", "ORG"])
-def test_is_location_return_true(mock_entity, checklist):
+def test_is_location_return_true(mock_token, checklist):
     """Should return true for defined entity types"""
-    result = Analyze.is_location(mock_entity(label=checklist))
+    result = Analyze.is_location(mock_token(ent_type=checklist))
     assert result
 
 
@@ -105,9 +107,9 @@ possible_entity_type = ["PERSON", "NORP", "FAC", "PRODUCT", "EVENT",
 
 
 @ pytest.mark.parametrize('checklist', possible_entity_type)
-def test_is_location_return_false(mock_entity, checklist):
+def test_is_location_return_false(mock_token, checklist):
     """Should return false for all other existing entity types"""
-    result = Analyze.is_location(mock_entity(label=checklist))
+    result = Analyze.is_location(mock_token(ent_type=checklist))
     assert not result
 
 
@@ -203,7 +205,7 @@ def test_check_location_not_found():
 
 def test_check_location_find_entities(capsys):
     """Should find the location in the sample sentence"""
-    test = Analyze("Où se trouve la Tour Eiffel ?", auto=False)
+    test = Analyze("Où se trouve l'Elysée ?", auto=False)
     test.check_location()
 
     out, err = capsys.readouterr()

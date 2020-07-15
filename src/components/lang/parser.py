@@ -81,7 +81,7 @@ class Analyze:
         if auto:
             self.get_valuable_info()
             self.check_greetings()
-            self.check_location2()
+            self.check_location()
             self.check_travel_verb()
 
     def get_entities(self):
@@ -112,25 +112,6 @@ class Analyze:
         print("Pas de mots de saluation dans la phrase.")
 
     def check_location(self):
-        """Check if there are entities in given sentence that are considered
-        location entities."""
-        for ent in self.doc.ents:
-            pl.info("Recherche des entitées dans le document...")
-            if ent is None:
-                pl.info("Pas d'entités retrouvées.")
-                return
-            else:
-                location = self.is_location(ent)
-                if location:
-                    pl.info("Entitée de lieu trouvée: {a} > label: {b}".format(
-                        a=ent.text, b=ent.label_))
-                    self.locations.append(ent)
-                    self.found_locations = True
-
-        print("\n Lieu(x) trouvé(s): {}".format(
-            self.locations))
-
-    def check_location2(self):
         """Check if there are entities in given sentence that are considered
         location entities."""
 
