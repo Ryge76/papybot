@@ -1,10 +1,22 @@
 import fr_core_news_sm
 import logging
+import json
+from pathlib import Path
+import os.path as p
 
 # create parser logger as pl for short
 pl = logging.getLogger('components.parser')
 nlp = fr_core_news_sm.load()
 pl.info("spacy initialized")
+
+# add custom stopwords to built-in stopwords list
+parser_path = Path(__file__)  # absolute path of this script
+
+stopwords_file = parser_path.parent/'custom_stopwords.json'
+
+with open(stopwords_file, 'rb') as f:
+    custom_stopwords = json.load(f)
+    nlp.Defaults.stop_words |= set(custom_stopwords)
 
 
 class Analyze:
@@ -22,13 +34,13 @@ class Analyze:
             return False
 
     @staticmethod
-    def is_location(entity):
+    def is_location(token):
         """Check if en entity found in the document has a type in the defined
         target. Require a spacy ents type. Returns a boolean."""
 
         target_ent_type = ("LOC", "GPE", "ORG")
 
-        if entity.label_ in target_ent_type:
+        if token.ent_type_ in target_ent_type:
             return True
 
         else:
@@ -69,7 +81,7 @@ class Analyze:
         if auto:
             self.get_valuable_info()
             self.check_greetings()
-            self.check_location()
+            self.check_location2()
             self.check_travel_verb()
 
     def get_entities(self):
@@ -117,6 +129,26 @@ class Analyze:
 
         print("\n Lieu(x) trouvé(s): {}".format(
             self.locations))
+
+    def check_location2(self):
+        """Check if there are entities in given sentence that are considered
+        location entities."""
+
+        if self.valuable_info:
+            for token in self.valuable_info:
+                if token in self.greetings:
+                    continue
+
+                location = self.is_location(token)
+                if location:
+                    pl.info(
+                        "Entitée de lieu trouvée: {a} > label: {b}".format(
+                            a=token.text, b=token.ent_type_))
+                    self.locations.append(token)
+                    self.found_locations = True
+
+            print("\n Lieu(x) trouvé(s): {}".format(
+                self.locations))
 
     def check_travel_verb(self):
         """Check if there are verbs in the semantic field of travel"""
