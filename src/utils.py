@@ -23,16 +23,17 @@ def analyze_query(query):
         analysis.update({"rephrase": True})
         return analysis
 
+    elif not parser_analysis.found_locations:
+        analysis.update({"location": False,
+                        "rephrase": True})
+        return analysis
+
     else:
         analysis.update({"rephrase": False})
 
-    if not parser_analysis.found_locations:
-        analysis.update({"nolocation": True})
-        return analysis
-
-    if len(parser_analysis.locations) == 0:
-        analysis.update({"location": False})
-        return analysis
+    # if len(parser_analysis.locations) == 0:
+    #     analysis.update({"location": False})
+    #     return analysis
 
     if len(parser_analysis.locations) > 1:
         analysis.update({"location": True,
@@ -41,8 +42,10 @@ def analyze_query(query):
         return analysis
 
     else:
-        analysis.update({"look_for": parser_analysis.locations[0].text})
+        analysis.update({"location": True,
+                        "look_for": parser_analysis.locations[0].text})
         return analysis
+
 
 def search_external_services(results_collector, keyword):
     """Contact Wikipedia and Google Maps for a specific keyword."""
@@ -54,7 +57,7 @@ def search_external_services(results_collector, keyword):
         results_collector.update({"gmaps": None})
 
     else:
-        results_collector.update({"gmpas": maps_results})
+        results_collector.update({"gmaps": maps_results})
 
     try:
         wikipedia_results = Wikipedia(keyword).infos

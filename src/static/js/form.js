@@ -42,13 +42,6 @@ const callHome = async (search) => {
     return response
 }
 
-// display question asked in the chat
-// formElt.addEventListener("change", function(e){
-//     let queryText = "";
-//     queryText = e.target.value;
-//     addTextToChat(queryText, visitorClasses);
-// });
-
 
 // handle form submission 
 formElt.addEventListener("submit", function(e) {
@@ -58,7 +51,6 @@ formElt.addEventListener("submit", function(e) {
     searchText = formElt.elements.search.value;
     console.log("La valeur reçue: ", searchText);
 
-    // TODO function to animate waiting phase
     addTextToChat(searchText, visitorClasses);
     addTextToChat("Laisse moi y réfléchir...", robotClasses);
     waitElt.classList.toggle("invisible");
@@ -77,6 +69,7 @@ formElt.addEventListener("submit", function(e) {
             else {
                 // TODO handle other type of error + catch() function
                 console.log("Try again: ", response.statusText);
+                waitElt.classList.toggle("invisible");
                 throw error
             }
         })
@@ -91,7 +84,7 @@ formElt.addEventListener("submit", function(e) {
 
             if (answer['notsure']) {
                 // TODO: function to generate various hesitation expressions
-                sentence += "Hmm... \nCe que je sais c'est que " + answer['wikipedia'].extract;
+                sentence += "Hmm... Je ne suis pas bien sûr d'avoir compris. \nCe que je sais c'est que " + answer['wikipedia'].extract;
                 sentence += "\n Si tu veux en savoir plus: " + answer['wikipedia'].url;
                 
                 let mapElt = createMap(answer['gmaps'].coord);
@@ -107,16 +100,17 @@ formElt.addEventListener("submit", function(e) {
             }
 
             // TODO: function to generate various ok response
-            sentence += "Je connais bien " + answer['searched_word'] + ". \n";
+            sentence += "Je connais bien " + answer['look_for'] + ". \n";
             sentence += "L'adresse pour t'y rendre c'est: " + answer['gmaps'].address;
             
             let mapElt = createMap(answer['gmaps'].coord);         
             addMapToChat(mapElt);
             addTextToChat(sentence, robotClasses);
+
+            // TODO: patienter et afficher les infos complémentaires
         })
         .catch((error) => {
-            waitElt.classList.toggle("invisible");
-            addTextToChat("Je suis désolé, ma réflexion n'a pas abouti... Peux tu reformuler ta demande ?", robotAlertClasses);
+            addTextToChat("Je suis désolé, mais ma réflexion n'a pas abouti... Peux tu reformuler ta demande ?", robotAlertClasses);
             console.error("Quelque chose s'est mal passé: ", error);
         })
         .finally(() => {
