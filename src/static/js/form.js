@@ -1,31 +1,8 @@
 import {createMap} from './gmaps.js';
+import {addTextToChat, addMapToChat, tellMeMoreAbout} from './dialogue.js'
 
 const formElt = document.getElementById("query");
 const waitElt = document.getElementById("wait");
-const questionListElt = document.getElementById("chat");
-const visitorClasses = ["visitor", "shadow", "my-md-2", "list-group-item", "list-group-item-warning"];
-const robotClasses = ["robot", "shadow", "my-md-2", "text-right", "list-group-item", "list-group-item-success"];
-const robotAlertClasses = ["robot", "shadow", "my-md-2", "text-right", "list-group-item", "list-group-item-danger"];
-
-// create <li> element to be added
-const createListElt = (content, classTags) => {
-    let liElt = document.createElement("li");
-    liElt.classList.add(...classTags);
-    liElt.textContent = content;
-    return liElt
-}
-
-// insert dialog elements to the chat
-const addTextToChat = (content, classTags) => {
-    let liElt = createListElt(content, classTags);
-    questionListElt.insertAdjacentElement("afterbegin", liElt);
-}
-
-// insert map element to the chat
-const addMapToChat = (content) => {
-    console.log("Ajout de la carte à la conversation.");
-    questionListElt.insertAdjacentElement("afterbegin", content);
-}
 
 
 // setting callback function to back-end server
@@ -51,8 +28,10 @@ formElt.addEventListener("submit", function(e) {
     searchText = formElt.elements.search.value;
     console.log("La valeur reçue: ", searchText);
 
-    addTextToChat(searchText, visitorClasses);
-    addTextToChat("Laisse moi y réfléchir...", robotClasses);
+    addTextToChat(searchText, 'visitorClasses');
+
+    //TODO: ajouter une phrase random
+    addTextToChat("Laisse moi y réfléchir...", 'robotClasses');
     waitElt.classList.toggle("invisible");
 
     // text passed to back-end
@@ -77,7 +56,8 @@ formElt.addEventListener("submit", function(e) {
             console.log("On passe à la création des phrases réponses.")
             waitElt.classList.toggle("invisible");
             let sentence = "";
-
+            
+            //TODO: case 'error' in answer
             if (answer['greetings']) {
                 sentence = answer['greeting_word'] + " !\n";
             }
@@ -90,27 +70,29 @@ formElt.addEventListener("submit", function(e) {
                 let mapElt = createMap(answer['gmaps'].coord);
                 addMapToChat(mapElt);
                 // createMap(answer['gmaps'].coord);
-                addTextToChat(sentence, robotClasses);
+                addTextToChat(sentence, 'robotClasses');
                 return
             }
 
             if (answer['rephrase']) {
                 sentence += "Désolé, je n'ai pas compris ta demande... \n Pourrais-tu la reformuler autrement ? \n";
-                return addTextToChat(sentence, robotAlertClasses);
+                return addTextToChat(sentence, 'robotAlertClasses');
             }
 
-            // TODO: function to generate various ok response
+            // TODO: function to generate various ok response + refactoring of display maps
             sentence += "Je connais bien " + answer['look_for'] + ". \n";
             sentence += "L'adresse pour t'y rendre c'est: " + answer['gmaps'].address;
             
             let mapElt = createMap(answer['gmaps'].coord);         
             addMapToChat(mapElt);
-            addTextToChat(sentence, robotClasses);
+            addTextToChat(sentence, 'robotClasses');
 
-            // TODO: patienter et afficher les infos complémentaires
+            // delay before displaying more informations
+            setTimeout(tellMeMoreAbout, 3000, answer);
+
         })
         .catch((error) => {
-            addTextToChat("Je suis désolé, mais ma réflexion n'a pas abouti... Peux tu reformuler ta demande ?", robotAlertClasses);
+            addTextToChat("Je suis désolé, mais ma réflexion n'a pas abouti... Peux tu reformuler ta demande ?", 'robotAlertClasses');
             console.error("Quelque chose s'est mal passé: ", error);
         })
         .finally(() => {
