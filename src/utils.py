@@ -54,7 +54,8 @@ def search_external_services(results_collector, keyword):
 
     except GmapsModuleError:
 
-        results_collector.update({"gmaps": None})
+        results_collector.update({"error": True, 
+        "gmaps": None})
 
     else:
         results_collector.update({"gmaps": maps_results})
@@ -64,7 +65,8 @@ def search_external_services(results_collector, keyword):
 
     except WikipediaModuleError:
 
-        results_collector.update({"wikipedia": None})
+        results_collector.update({"error": True,
+        "wikipedia": None})
 
     else:
         results_collector.update({"wikipedia": wikipedia_results})

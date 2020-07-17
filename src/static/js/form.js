@@ -1,5 +1,5 @@
 import {createMap} from './gmaps.js';
-import {addTextToChat, addMapToChat, tellMeMoreAbout} from './dialogue.js'
+import {addTextToChat, addMapToChat, tellMoreAbout, robotCommunicates} from './dialogue.js'
 
 const formElt = document.getElementById("query");
 const waitElt = document.getElementById("wait");
@@ -31,7 +31,8 @@ formElt.addEventListener("submit", function(e) {
     addTextToChat(searchText, 'visitorClasses');
 
     //TODO: ajouter une phrase random
-    addTextToChat("Laisse moi y réfléchir...", 'robotClasses');
+    // addTextToChat("Laisse moi y réfléchir...", 'robotClasses');
+    // robotCommunicates('intro');
     waitElt.classList.toggle("invisible");
 
     // text passed to back-end
@@ -55,44 +56,66 @@ formElt.addEventListener("submit", function(e) {
         .then((answer) => {
             console.log("On passe à la création des phrases réponses.")
             waitElt.classList.toggle("invisible");
-            let sentence = "";
+
+            // let sentence = "";
             
             //TODO: case 'error' in answer
+            if (answer['error']) {
+                throw error;
+            }
+            
             if (answer['greetings']) {
-                sentence = answer['greeting_word'] + " !\n";
+                // sentence = answer['greeting_word'] + " !\n";
+                robotCommunicates('greetings', answer['greeting_word']);
+            }
+
+            robotCommunicates('intro');
+
+            if (answer['rephrase']) {
+                // sentence += "Désolé, je n'ai pas compris ta demande... \n Pourrais-tu la reformuler autrement ? \n";
+                // return addTextToChat(sentence, 'robotAlertClasses');
+                return robotCommunicates('rephrase');
             }
 
             if (answer['notsure']) {
                 // TODO: function to generate various hesitation expressions
-                sentence += "Hmm... Je ne suis pas bien sûr d'avoir compris. \nCe que je sais c'est que " + answer['wikipedia'].extract;
-                sentence += "\n Si tu veux en savoir plus: " + answer['wikipedia'].url;
+                // let complement = "Ce que je sais c'est que " + answer['wikipedia'].extract;
+                // sentence += "\n Si tu veux en savoir plus: " + answer['wikipedia'].url;
                 
+                // robotCommunicates('notsure', complement);
+                // robotCommunicates('direct', );
+
+                tellMoreAbout(answer, false);
+
                 let mapElt = createMap(answer['gmaps'].coord);
                 addMapToChat(mapElt);
-                // createMap(answer['gmaps'].coord);
-                addTextToChat(sentence, 'robotClasses');
+
+                // addTextToChat(sentence, 'robotClasses');
                 return
             }
 
-            if (answer['rephrase']) {
-                sentence += "Désolé, je n'ai pas compris ta demande... \n Pourrais-tu la reformuler autrement ? \n";
-                return addTextToChat(sentence, 'robotAlertClasses');
-            }
 
             // TODO: function to generate various ok response + refactoring of display maps
-            sentence += "Je connais bien " + answer['look_for'] + ". \n";
-            sentence += "L'adresse pour t'y rendre c'est: " + answer['gmaps'].address;
+            // sentence += "Je connais bien " + answer['look_for'] + ". \n";
+            // sentence += "L'adresse pour t'y rendre c'est: " + answer['gmaps'].address;
             
+            robotCommunicates('sure', answer['look_for'])
+
+            let direction;
+            direction = "L'adresse pour t'y rendre c'est: " + answer['gmaps'].address;
+            robotCommunicates('direct', direction)
+
             let mapElt = createMap(answer['gmaps'].coord);         
             addMapToChat(mapElt);
-            addTextToChat(sentence, 'robotClasses');
+            // addTextToChat(sentence, 'robotClasses');
 
             // delay before displaying more informations
-            setTimeout(tellMeMoreAbout, 3000, answer);
+            setTimeout(tellMoreAbout, 3000, answer);
 
         })
         .catch((error) => {
-            addTextToChat("Je suis désolé, mais ma réflexion n'a pas abouti... Peux tu reformuler ta demande ?", 'robotAlertClasses');
+            // addTextToChat("Je suis désolé, mais ma réflexion n'a pas abouti... Peux tu reformuler ta demande ?", 'robotAlertClasses');
+            robotCommunicates('error')
             console.error("Quelque chose s'est mal passé: ", error);
         })
         .finally(() => {
