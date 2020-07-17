@@ -30,9 +30,6 @@ formElt.addEventListener("submit", function(e) {
 
     addTextToChat(searchText, 'visitorClasses');
 
-    //TODO: ajouter une phrase random
-    // addTextToChat("Laisse moi y réfléchir...", 'robotClasses');
-    // robotCommunicates('intro');
     waitElt.classList.toggle("invisible");
 
     // text passed to back-end
@@ -47,7 +44,6 @@ formElt.addEventListener("submit", function(e) {
                 return answer
             }
             else {
-                // TODO handle other type of error + catch() function
                 console.log("Try again: ", response.statusText);
                 waitElt.classList.toggle("invisible");
                 throw error
@@ -57,47 +53,28 @@ formElt.addEventListener("submit", function(e) {
             console.log("On passe à la création des phrases réponses.")
             waitElt.classList.toggle("invisible");
 
-            // let sentence = "";
-            
-            //TODO: case 'error' in answer
             if (answer['error']) {
                 throw error;
             }
             
             if (answer['greetings']) {
-                // sentence = answer['greeting_word'] + " !\n";
                 robotCommunicates('greetings', answer['greeting_word']);
             }
 
             robotCommunicates('intro');
 
             if (answer['rephrase']) {
-                // sentence += "Désolé, je n'ai pas compris ta demande... \n Pourrais-tu la reformuler autrement ? \n";
-                // return addTextToChat(sentence, 'robotAlertClasses');
                 return robotCommunicates('rephrase');
             }
 
             if (answer['notsure']) {
-                // TODO: function to generate various hesitation expressions
-                // let complement = "Ce que je sais c'est que " + answer['wikipedia'].extract;
-                // sentence += "\n Si tu veux en savoir plus: " + answer['wikipedia'].url;
-                
-                // robotCommunicates('notsure', complement);
-                // robotCommunicates('direct', );
-
                 tellMoreAbout(answer, false);
 
                 let mapElt = createMap(answer['gmaps'].coord);
                 addMapToChat(mapElt);
 
-                // addTextToChat(sentence, 'robotClasses');
                 return
             }
-
-
-            // TODO: function to generate various ok response + refactoring of display maps
-            // sentence += "Je connais bien " + answer['look_for'] + ". \n";
-            // sentence += "L'adresse pour t'y rendre c'est: " + answer['gmaps'].address;
             
             robotCommunicates('sure', answer['look_for'])
 
@@ -107,14 +84,12 @@ formElt.addEventListener("submit", function(e) {
 
             let mapElt = createMap(answer['gmaps'].coord);         
             addMapToChat(mapElt);
-            // addTextToChat(sentence, 'robotClasses');
-
+            
             // delay before displaying more informations
             setTimeout(tellMoreAbout, 3000, answer);
 
         })
         .catch((error) => {
-            // addTextToChat("Je suis désolé, mais ma réflexion n'a pas abouti... Peux tu reformuler ta demande ?", 'robotAlertClasses');
             robotCommunicates('error')
             console.error("Quelque chose s'est mal passé: ", error);
         })
