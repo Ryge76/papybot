@@ -34,13 +34,13 @@ class Analyze:
             return False
 
     @staticmethod
-    def is_location(token):
+    def is_entity_location(ent):
         """Check if en entity found in the document has a type in the defined
         target. Require a spacy ents type. Returns a boolean."""
 
         target_ent_type = ("LOC", "GPE", "ORG")
 
-        if token.ent_type_ in target_ent_type:
+        if ent.label_ in target_ent_type:
             return True
 
         else:
@@ -81,7 +81,7 @@ class Analyze:
         if auto:
             self.get_valuable_info()
             self.check_greetings()
-            self.check_location()
+            self.check_location_in_entities()
             self.check_travel_verb()
 
     def get_entities(self):
@@ -111,21 +111,18 @@ class Analyze:
                 return
         print("Pas de mots de saluation dans la phrase.")
 
-    def check_location(self):
+    def check_location_in_entities(self):
         """Check if there are entities in given sentence that are considered
         location entities."""
 
         if self.valuable_info:
-            for token in self.valuable_info:
-                if token in self.greetings:
-                    continue
-
-                location = self.is_location(token)
+            for ent in self.entities:
+                location = self.is_entity_location(ent)
                 if location:
                     pl.info(
                         "Entitée de lieu trouvée: {a} > label: {b}".format(
-                            a=token.text, b=token.ent_type_))
-                    self.locations.append(token)
+                            a=ent.text, b=ent.label_))
+                    self.locations.append(ent)
                     self.found_locations = True
 
             print("\n Lieu(x) trouvé(s): {}".format(
@@ -147,20 +144,18 @@ class Analyze:
 
             print("Verbe(s) trouvé(s): {} ".format(self.travel_verbs))
 
-    def parse_noun_chunks(self):
-        """Parse sentence to get noun chunks and their roots."""
-
-        for chunk in self.doc.noun_chunks:
-            print("Groupe nominal: ", chunk.text, " >> racine du groupe: ",
-                  chunk.root.text, " > role: ", chunk.root.dep_,
-                  " > racine dans la phrase: ", chunk.root.head.text)
-
 
 def main():
 
-    Analyze("Salut GrandPy ! Est ce que tu connais l'adresse "
-                   "d'OpenClassrooms ?")
+    # Analyze("Salut GrandPy ! Est ce que tu connais l'adresse "
+    #                "d'OpenClassrooms ?")
 
+    # test = Analyze("La Tour Eiffel")
+    # print(test.entities)
+
+    test = Analyze("Où se trouve la Tour Eiffel ?")
+    affiche = [(ent.text, ent.label_) for ent in test.entities]
+    print("\n Entité: {} => {}".format(affiche[0][0], affiche[0][1]))
 
 if __name__ == '__main__':
     main()

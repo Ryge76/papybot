@@ -94,9 +94,9 @@ def test_is_greeting_return_false(mock_token, checklist):
 
 
 @pytest.mark.parametrize('checklist', ["LOC", "GPE", "ORG"])
-def test_is_location_return_true(mock_token, checklist):
+def test_is_entity_location_return_true(mock_entity, checklist):
     """Should return true for defined entity types"""
-    result = Analyze.is_location(mock_token(ent_type=checklist))
+    result = Analyze.is_entity_location(mock_entity(label=checklist))
     assert result
 
 
@@ -107,9 +107,9 @@ possible_entity_type = ["PERSON", "NORP", "FAC", "PRODUCT", "EVENT",
 
 
 @ pytest.mark.parametrize('checklist', possible_entity_type)
-def test_is_location_return_false(mock_token, checklist):
+def test_is_entity_location_return_false(mock_entity, checklist):
     """Should return false for all other existing entity types"""
-    result = Analyze.is_location(mock_token(ent_type=checklist))
+    result = Analyze.is_entity_location(mock_entity(label=checklist))
     assert not result
 
 
@@ -194,20 +194,24 @@ def test_check_greetings_find_greetings(capsys):
     assert test.found_greetings
 
 
-def test_check_location_not_found():
+def test_check_location_in_entities_not_found():
     """Shouldn't return any location"""
     test = Analyze("Bonjour, comment ça va ?", auto=False)
-    result = test.check_location()
+    test.get_valuable_info()
+
+    result = test.check_location_in_entities()
 
     assert result == None
     assert not test.found_locations
 
 
-def test_check_location_find_entities(capsys):
+def test_check_location_in_entities_find_entities(capsys):
     """Should find the location in the sample sentence"""
-    test = Analyze("Où se trouve l'Elysée ?", auto=False)
-    test.check_location()
+    test = Analyze("Où se trouve la Tour Eiffel ?", auto=False)
+    with capsys.disabled():
+        test.get_valuable_info()
 
+    test.check_location_in_entities()
     out, err = capsys.readouterr()
     expected_outcome = "\n Lieu(x) trouvé(s): [Tour Eiffel]\n"
 
@@ -218,6 +222,7 @@ def test_check_location_find_entities(capsys):
 def test_check_travel_verb_not_found():
     """Shouldn't find any verb related to a travel intention"""
     test = Analyze("Je veux nager à la plage.", auto=False)
+
     test.get_valuable_info()
     result = test.check_travel_verb()
 
@@ -237,16 +242,3 @@ def test_check_travel_verb_found(capsys):
 
     assert out == expected_outcome
     assert test.found_travel_verbs
-
-
-def test_parse_noun_chuncks(capsys):
-    """Should find related noun chuncks."""
-    test = Analyze("Où se trouve la Tour Eiffel ?", auto=False)
-    test.parse_noun_chunks()
-
-    out, err = capsys.readouterr()
-    expected_outcome = "Groupe nominal:  la Tour Eiffel  >> racine du " \
-                       "groupe:  Tour  > role:  obj  > racine dans " \
-                       "la phrase:  trouve\n"
-
-    assert out == expected_outcome

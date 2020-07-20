@@ -3,10 +3,12 @@ from ...src.utils import make_decision, analyze_query
 
 # ---- Defining fixtures, mocks and variables for testing ---- #
 
-analysis_results_protype = {'gmpas': {'address': '7 Cité Paradis, 75010 Paris, France',
+analysis_results_protype = {'gmaps': {'address': '7 Cité Paradis, '
+                                                 '75010 Paris, France',
            'coord': {'lat': 48.8748465, 'lng': 2.3504873}},
  'greeting_word': 'Salut',
  'greetings': True,
+                            'location': True,
  'look_for': 'Openclassrooms',
  'rephrase': False,
  'wikipedia': {'extract': 'OpenClassrooms est un site web de formation en '
@@ -24,6 +26,7 @@ analysis_results_protype = {'gmpas': {'address': '7 Cité Paradis, 75010 Paris, 
 
 analysis_results_case1 = {"greetings": True,
                         "greeting_word": "Salut",
+                          "location": True,
                           "look_for": "Openclassrooms",
                           "rephrase": False}
 

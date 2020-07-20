@@ -31,10 +31,6 @@ def analyze_query(query):
     else:
         analysis.update({"rephrase": False})
 
-    # if len(parser_analysis.locations) == 0:
-    #     analysis.update({"location": False})
-    #     return analysis
-
     if len(parser_analysis.locations) > 1:
         analysis.update({"location": True,
                          "notsure": True,
