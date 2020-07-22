@@ -1,15 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div id="welcome" class="row">
-    <h1 class="col">Bienvenue !
-      <img class="col-2" src="{{url_for('static', filename='images/bot_head.png')}}" alt="robot head smiling" />
-    </h1>
-    <h4 class="col-12 font-weight-light">Que veux tu savoir ?</h4>  
+  <div id="welcome" class="row mt-3 mb-5">
+    <img class="col-3 col-md-3 img-fluid mx-auto vh-25" src="{{url_for('static', filename='images/bot_head.png')}}" alt="robot head smiling" />
+    <h1 class="col-auto col-md-auto mx-auto mt-md-4">Bienvenue !</h1>
+  </div>
+  
+  <div class="row ml-5">
+    <h4 class="col-auto col-md-auto font-weight-light">Que veux tu savoir ?</h4>
+    <form id="query" class="form-inline pb-2">
+      <div class="form-group">
+        <input type="search" id="search" name="search" class="form-control" maxlength="150" required autofocus
+          placeholder="Pose moi ta question ici" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Réponse...</button>
+      </div>
+    </form>
   </div>
 
-  <div id="map" class="row">
-  </div>
 
   <!-- loading animation on top of the chat list -->
   <div id="wait" class="text-center invisible">
@@ -22,8 +29,8 @@
   </div>
 
   <!-- chat -->
-  <div class="h-75 row">
-    <ul id="chat" class="col list-group chat">
+  <div class="row mx-auto">
+    <ul id="chat" class="col list-group">
     </ul>
   </div>
 

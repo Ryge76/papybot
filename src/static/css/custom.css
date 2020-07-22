@@ -1,21 +1,59 @@
-html {
-    height: 100%;
+/* @font-face {
+    font-family: 'Compagnon';
+    src: url('/fonts/Compagnon-Bold.otf') format(otf),
+    url('/fonts/Compagnon-Light.otf') format(otf);
+} */
+
+@font-face {
+    font-family: 'Library';
+    src: local('/fonts/Library3am.otf') format(otf),
+    local('/fonts/Library3am_soft.otf') format(otf);
+}
+
+@font-face {
+    font-family: 'SomeTimeLater';
+    src: local('/fonts/SomeTimeLater.otf') format(otf);
+}
+
+@font-face {
+    font-family: 'Robota';
+    src: url('/fonts/Robota.otf') format(otf);
 }
 
 body {
     background-color: #d2e8f5;
-    min-height: 100%;
+    position: relative;
+    padding-bottom: 80px;
+    min-height: 100vh;
+}
+
+#main {
+    position: relative;
 }
 
 footer {
     background-color: #85b3d7;
-    position: relative;
-    top: 100vh;
+    box-shadow: 0px -2px 5px grey;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+
+#welcome {
+       max-width: 75%;
+       font-family: 'Robota';
+}
+
+.custom-brand {
+    font-family: 
+}
+
+#welcome img {
+    width: 8%;
+    height: 10%;
 }
 
 .map {
-    position: relative;
-    left: 50px;
     height: 400px;
     width: 100%;
     animation: fadein 0.75s ease-in;
@@ -23,14 +61,10 @@ footer {
 }
 
 .robot {
-    position: relative;
-    left: 50px;
     animation: slidein 0.70s ease-in-out;
 }
 
 .visitor {
-    position: relative;
-    right: 50px;
     animation: fadein 0.25s ease-in;
 }
 
@@ -64,10 +98,3 @@ footer {
         opacity: 1;
     }
 }
-
-/* @media screen and (max-width: 800px) {
-    .map .robot .visitor {
-        position: static;
-        margin: 5px;
-    }
-} */

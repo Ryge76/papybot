@@ -2,9 +2,9 @@ const questionListElt = document.getElementById("chat");
 
 // collection of classes tags for dialogue
 const customTags = {
-    'visitorClasses': ["visitor", "shadow", "my-md-2", "list-group-item", "list-group-item-warning"],
-    'robotClasses': ["robot", "shadow", "my-md-2", "text-right", "list-group-item", "list-group-item-success"],
-    'robotAlertClasses': ["robot", "shadow", "my-md-2", "text-right", "list-group-item", "list-group-item-danger"]
+    'visitorClasses': ["visitor", "shadow", "my-1", "list-group-item", "list-group-item-warning"],
+    'robotClasses': ["robot", "shadow", "my-1", "text-right", "list-group-item", "list-group-item-success"],
+    'robotAlertClasses': ["robot", "shadow", "my-1", "text-right", "list-group-item", "list-group-item-danger"]
 };
 
 // collection of add-on sentences

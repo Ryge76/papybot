@@ -19,37 +19,41 @@
 
         <!-- top navigation bar -->
         <div class="navbar navbar-light shadow mb-2 container-fluid sticky-top" style="background-color: #85b3d7" role="navigation">
-            <div class="row">
-                <a class="navbar-brand col" href="/" id="top">Papybot</a>
-                <form id="query" class="form-inline">
-                    <div class="form-group">
-                        <input type="search" id="search" name="search" class="form-control" maxlength="150" required autofocus placeholder="Pose moi ta question ici" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Réponse...</button>
-                    </div>
-                </form>
+            <div class="row mx-auto">
+                <a class="navbar-brand col" href="/"><span class="custom-brand">PapyBot</span></a>
             </div>
         </div>
 
         <!-- integration of other pages -->
-        <div id="main" class="container vh-75 mb-2">
+        <div id="main" class="container mb-2">
 
             {% block content %}{% endblock %}
 
         </div>
 
         <!-- bottom navigation bar -->
-        <footer class="navbar container-fluid" role="navigation">
-            <div class="row">
-                <a class="navbar-brand col-md-4" href="#top">Accueil</a>
-                <section class="col-md-4">
-                    <h6>Webapp by:</h6>
-                    <h6>G. JASMIN</h6>
-                </section>
-                <section class="col-md-3">
-                    <h6>View source code on</h6>
-                    <a href="#">Github</a>
-                </section>
-            </div>
+        <footer>
+            <nav class="navbar container-fluid" role="navigation">
+                <div class="row mx-auto">
+                    <a class="navbar-brand col-auto col-md" href="#welcome">
+                        <img src="{{url_for('static', filename='images/arrow_up.svg')}}" alt="retour accueil">
+                    </a>
+                    <section class="d-none d-md-block col-md-auto">
+                        <h6>Web application by: </h6>
+                        <a href="https://www.linkedin.com/in/g%C3%A9ry-jasmin-035b64149/" target="_blank">
+                            G. JASMIN
+                            <img class="img-fluid mb-2" style="height: 20px; width: 20px;"
+                                src="{{url_for('static', filename='images/linkedin.png')}}" alt="LinkedIn" />
+                        </a>
+                    </section>
+                    <section class="col-auto col-md-auto">
+                        <h6>View source code on
+                            <a href="https://github.com/Ryge76/papybot" target="_blank">Github</a>
+                        </h6>
+                
+                    </section>
+                </div>
+            </nav>
         </footer>
         
         <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
