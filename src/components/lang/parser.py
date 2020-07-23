@@ -2,7 +2,6 @@ import fr_core_news_sm
 import logging
 import json
 from pathlib import Path
-import os.path as p
 
 # create parser logger as pl for short
 pl = logging.getLogger('components.parser')
@@ -111,19 +110,36 @@ class Analyze:
                 return
         print("Pas de mots de saluation dans la phrase.")
 
+    def is_valuable_location(self, ent):
+        """Check if all token in an entity is a valid one"""
+
+        for token in ent:
+            if token in self.valuable_info:
+                continue
+            else:
+                return False
+
+        return True
+
     def check_location_in_entities(self):
         """Check if there are entities in given sentence that are considered
         location entities."""
 
         if self.valuable_info:
-            for ent in self.entities:
-                location = self.is_entity_location(ent)
-                if location:
-                    pl.info(
-                        "Entitée de lieu trouvée: {a} > label: {b}".format(
-                            a=ent.text, b=ent.label_))
-                    self.locations.append(ent)
-                    self.found_locations = True
+
+            # keep entities that are considered locations
+            locations = [ent for ent in self.entities if
+                         self.is_entity_location(ent)]
+
+
+            # keep locations containing only valuable words
+            # made to filter out wrong identifications from spacy
+            valid_location = [ent for ent in locations if
+                              self.is_valuable_location(ent)]
+
+            if valid_location:
+                self.locations = valid_location
+                self.found_locations = True
 
             print("\n Lieu(x) trouvé(s): {}".format(
                 self.locations))
