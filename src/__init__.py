@@ -23,5 +23,6 @@ def create_app(test_config=None):
         pass
 
     from . import papybot
+    app.register_blueprint(papybot.bp)
 
     return app
