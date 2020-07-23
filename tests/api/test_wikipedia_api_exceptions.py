@@ -7,12 +7,12 @@ from ...src.components.api.wikipedia import Wikipedia, WikipediaModuleError
 
 sample_response_with_error = {"error":{"code":"badvalue","info":"Unrecognized value for parameter \"action\": fake_action.","*":"See https://fr.wikipedia.org/w/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/mailman/listinfo/mediawiki-api-announce&gt; for notice of API deprecations and breaking changes."},"servedby":"mw1345"}
 
-@pytest.fixture()
+@pytest.fixture
 def wikipedia_test_instance():
     return Wikipedia('test', auto=False)
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_response():
     """ Create fake response object. """
 
@@ -47,7 +47,7 @@ def mock_requests_session():
     return FakeSession()
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_wiki_instance(monkeypatch):
     """Create Wikipedia instance with 'session' attribute containing a
     mocked request.Session object"""

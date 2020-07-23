@@ -39,6 +39,8 @@ analysis_results_case3 = {"greetings": False,
                           "notsure_search": "Paris",
                           "rephrase": False}
 
+# ---- tests ---- #
+
 def test_analyze_query():
     result = analyze_query("Salut Papybot ! Où se trouve Openclassrooms ?")
 

@@ -6,7 +6,7 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY=os.environ.get('SECRET_KEY') or os.urandom(24)ujyCVXW>
+        SECRET_KEY=os.environ.get('SECRET_KEY') or os.urandom(24)
     )
 
     if test_config is None:
@@ -21,5 +21,7 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    from . import papybot
 
     return app

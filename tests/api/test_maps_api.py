@@ -70,7 +70,7 @@ sample_response = {
 }
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_response():
     class FakeAPiResponse:
         def json(self):

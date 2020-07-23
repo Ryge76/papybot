@@ -3,7 +3,7 @@ from ...src.components.lang.parser import Analyze
 
 
 # ---- Defining fixtures, mocks, and variables for testing ---- #
-@pytest.fixture()
+@pytest.fixture
 def mock_token():
     class FakeToken:
         def __init__(self, ent_type=None, pos=None, lower=None, lemma=None, \
@@ -16,7 +16,7 @@ def mock_token():
 
     return FakeToken
 
-@pytest.fixture()
+@pytest.fixture
 def mock_entity():
     class FakeEntity:
         def __init__(self, label=None):
