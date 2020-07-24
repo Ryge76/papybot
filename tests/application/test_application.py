@@ -9,6 +9,7 @@ from src import create_app
 
 @pytest.fixture
 def test_app():
+
     testing_config = {
         "FLASK_ENV": "development",
         "TESTING": True,
