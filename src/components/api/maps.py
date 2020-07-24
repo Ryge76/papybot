@@ -4,11 +4,16 @@ import logging
 import requests
 
 # create maps logger as ml for short
-ml = logging.getLogger('components.maps')
+
+"""Contains logic to search Google Maps API."""
+
+
+ml = logging.getLogger("components.maps")
 
 
 class GmapsModuleError(Exception):
     """Define specific module error"""
+
     pass
 
 
@@ -21,9 +26,7 @@ class Gmaps:
 
     def __init__(self):
         self.session = requests.Session()
-        self.parameters = {'address': None,
-                           'key': self.GMAPS_KEY
-                           }
+        self.parameters = {"address": None, "key": self.GMAPS_KEY}
 
     def _call_api(self, parameters):
         """Call Google Maps API. Require a dict containing the API key and
@@ -35,7 +38,7 @@ class Gmaps:
                                         timeout=5)
 
         except requests.exceptions.RequestException as e:
-            message = 'Une erreur de connexion est survenue => {}'.format(e)
+            message = "Une erreur de connexion est survenue => {}".format(e)
             ml.exception(message)
             raise
 
@@ -44,25 +47,25 @@ class Gmaps:
                 response.raise_for_status()
 
             except requests.exceptions.HTTPError as e:
-                ml.exception("Le serveur renvoie un message "
-                             "d'erreur => {}".format(e))
+                ml.exception(
+                    "Le serveur renvoie un message " "d'erreur => {}".format(e)
+                )
                 raise
 
             else:
                 if "error_message" in response.text:
                     ml.error("Message d'erreur contenu dans la réponse.")
-                    raise requests.exceptions.HTTPError("Message d'erreur "
-                                                        "retourné dans la "
-                                                        "réponse.")
+                    raise requests.exceptions.HTTPError(
+                        "Message d'erreur " "retourné dans la " "réponse."
+                    )
 
-                else:
-                    return response
+                return response
 
     def find(self, query):
         """Get coordinates and address of the place in query.
         Require string. Return a dict."""
 
-        self.parameters.update({'address': query})
+        self.parameters.update({"address": query})
 
         try:
             api_response = self._call_api(self.parameters)
@@ -99,14 +102,16 @@ class Gmaps:
             source = api_response.json()
 
         except requests.exceptions.ContentDecodingError as e:
-            message = 'Problème avec le JSON reçu => {}'.format(e)
+            message = "Problème avec le JSON reçu => {}".format(e)
             ml.exception(message)
             raise
 
         else:
             try:
-                extract = {'address': source['results'][0].get('formatted_address'),
-                           'coord': source['results'][0]['geometry'].get('location')}
+                extract = {
+                    "address": source["results"][0].get("formatted_address"),
+                    "coord": source["results"][0]["geometry"].get("location"),
+                }
 
             except KeyError as e:
                 ml.exception(e)
@@ -121,11 +126,14 @@ class Gmaps:
 
 
 def main():
+    """Show example"""
     location = Gmaps()
-    result = location.find('Openclassrooms')
-    print("L'adresse d'Openclassrooms est {address} et ses coordonnées: {"
-          "coord}".format(**result))
+    result = location.find("Openclassrooms")
+    print(
+        "L'adresse d'Openclassrooms est {address} et ses coordonnées: {"
+        "coord}".format(**result)
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

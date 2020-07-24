@@ -6,8 +6,7 @@ from ...src.components.lang.parser import Analyze
 @pytest.fixture
 def mock_token():
     class FakeToken:
-        def __init__(self, ent_type=None, pos=None, lower=None, lemma=None, \
-                                                               text=None):
+        def __init__(self, ent_type=None, pos=None, lower=None, lemma=None, text=None):
             self.pos_ = pos
             self.lower_ = lower
             self.lemma_ = lemma
@@ -16,6 +15,7 @@ def mock_token():
 
     return FakeToken
 
+
 @pytest.fixture
 def mock_entity():
     class FakeEntity:
@@ -23,17 +23,16 @@ def mock_entity():
             self.label_ = label
 
     return FakeEntity
+
+
 # ---- Tests ---- #
 
 
 # global test for stopwords
-sentences_to_try = ["... ? ! ; : .",
-                    "Où es-tu ?",
-                    "Je suis deja debout."
-                    ]
+sentences_to_try = ["... ? ! ; : .", "Où es-tu ?", "Je suis deja debout."]
 
 
-@pytest.mark.parametrize('test_sentence', sentences_to_try)
+@pytest.mark.parametrize("test_sentence", sentences_to_try)
 def test_no_valuable_info_found_for_stopwords(test_sentence):
     """Should not retain valuable word in proposed sentences"""
     result = Analyze(test_sentence)
@@ -45,8 +44,7 @@ def test_parser_on_sample_sentence():
     """Should retain some valuable words from sentence, including 1 location
     and 1 greetings word."""
 
-    sample = "Salut Grandpy ! Est ce que tu connais l'adresse " \
-             "d'Openclassrooms ?"
+    sample = "Salut Grandpy ! Est ce que tu connais l'adresse " "d'Openclassrooms ?"
     result = Analyze(sample)
 
     # spacy library parse and convert any sentence in tokens objects with a
@@ -55,8 +53,7 @@ def test_parser_on_sample_sentence():
     result_greetings = [token.text for token in result.greetings]
     result_locations = [token.text for token in result.locations]
 
-    expected_valuable_info = ["Salut", "connais", "adresse",
-                              "Openclassrooms"]
+    expected_valuable_info = ["Salut", "connais", "adresse", "Openclassrooms"]
     expected_greetings = ["Salut"]
     expected_locations = ["Openclassrooms"]
 
@@ -70,11 +67,22 @@ def test_parser_on_sample_sentence():
 # ---- unit test for methods ---- #
 
 
-greetings_list = ["bonjour", "bonsoir", "au revoir", "adieu", "salut",
-                  "coucou", "hey", "'lut", "hello", "merci", "bonne nuit"]
+greetings_list = [
+    "bonjour",
+    "bonsoir",
+    "au revoir",
+    "adieu",
+    "salut",
+    "coucou",
+    "hey",
+    "'lut",
+    "hello",
+    "merci",
+    "bonne nuit",
+]
 
 
-@pytest.mark.parametrize('checklist', greetings_list)
+@pytest.mark.parametrize("checklist", greetings_list)
 def test_is_greeting_return_true(mock_token, checklist):
     """Should return True if word is in the greetings list """
     result = Analyze.is_greeting(mock_token(lower=checklist))
@@ -84,54 +92,85 @@ def test_is_greeting_return_true(mock_token, checklist):
 not_greetings_list = ["kikoo", "citron", "porte"]
 
 
-@pytest.mark.parametrize('checklist', not_greetings_list)
+@pytest.mark.parametrize("checklist", not_greetings_list)
 def test_is_greeting_return_false(mock_token, checklist):
     """Should return True if word is in the greetings list """
     result = Analyze.is_greeting(mock_token(lower=checklist))
     assert not result
 
 
-
-
-@pytest.mark.parametrize('checklist', ["LOC", "GPE", "ORG"])
+@pytest.mark.parametrize("checklist", ["LOC", "GPE", "ORG"])
 def test_is_entity_location_return_true(mock_entity, checklist):
     """Should return true for defined entity types"""
     result = Analyze.is_entity_location(mock_entity(label=checklist))
     assert result
 
 
+possible_entity_type = [
+    "PERSON",
+    "NORP",
+    "FAC",
+    "PRODUCT",
+    "EVENT",
+    "WORK_OF_ART",
+    "LAW",
+    "LANGUAGE",
+    "DATE",
+    "TIME",
+    "PERCENT",
+    "MONEY",
+    "QUANTITY",
+    "ORDINAL",
+    "CARDINAL",
+]
 
-possible_entity_type = ["PERSON", "NORP", "FAC", "PRODUCT", "EVENT",
-                        "WORK_OF_ART", "LAW", "LANGUAGE", "DATE", "TIME",
-                        "PERCENT", "MONEY", "QUANTITY", "ORDINAL", "CARDINAL"]
 
-
-@ pytest.mark.parametrize('checklist', possible_entity_type)
+@pytest.mark.parametrize("checklist", possible_entity_type)
 def test_is_entity_location_return_false(mock_entity, checklist):
     """Should return false for all other existing entity types"""
     result = Analyze.is_entity_location(mock_entity(label=checklist))
     assert not result
 
 
-@pytest.mark.parametrize('checklist', ["manger", "nager", "rouler"])
+@pytest.mark.parametrize("checklist", ["manger", "nager", "rouler"])
 def test_is_travel_verb_return_false(mock_token, checklist):
     """Should return false for random verbs"""
     result = Analyze.is_travel_verb(mock_token(lemma=checklist))
     assert not result
 
 
-target_verbs = ["aller", "bouger", "bourlinguer", "circuler", "courir",
-                "déplacer", "excursionner", "filer", "louvoyer",
-                "marcher",
-                "naviguer", "nomadiser", "pérégriner", "partir",
-                "se balader", "se trouver", "trouver",
-                "se déplacer", "se promener", "se transporter",
-                "sillonner",
-                "transhumer", "vagabonder", "visiter", "voyager",
-                "se promoner", "se rendre"]
+target_verbs = [
+    "aller",
+    "bouger",
+    "bourlinguer",
+    "circuler",
+    "courir",
+    "déplacer",
+    "excursionner",
+    "filer",
+    "louvoyer",
+    "marcher",
+    "naviguer",
+    "nomadiser",
+    "pérégriner",
+    "partir",
+    "se balader",
+    "se trouver",
+    "trouver",
+    "se déplacer",
+    "se promener",
+    "se transporter",
+    "sillonner",
+    "transhumer",
+    "vagabonder",
+    "visiter",
+    "voyager",
+    "se promoner",
+    "se rendre",
+]
 
 
-@pytest.mark.parametrize('checklist', target_verbs)
+@pytest.mark.parametrize("checklist", target_verbs)
 def test_is_travel_verb_return_false(mock_token, checklist):
     """Should return true for selected verbs"""
     result = Analyze.is_travel_verb(mock_token(lemma=checklist))
@@ -140,14 +179,18 @@ def test_is_travel_verb_return_false(mock_token, checklist):
 
 def test_get_entities_return_entities(capsys):
     """Should find 2 entities in the sample sentence"""
-    test = Analyze("Salut GrandPy ! Est ce que tu connais l'adresse "
-            "d'OpenClassrooms ?", auto=False)
+    test = Analyze(
+        "Salut GrandPy ! Est ce que tu connais l'adresse " "d'OpenClassrooms ?",
+        auto=False,
+    )
 
     test.get_entities()
     out, err = capsys.readouterr()
-    expected_outcome = "\n Nombre d'entités trouvées: 2.\n\n" \
-                       " Entité: Salut GrandPy ! > Etiquette: MISC\n\n" \
-                       " Entité: OpenClassrooms > Etiquette: ORG\n"
+    expected_outcome = (
+        "\n Nombre d'entités trouvées: 2.\n\n"
+        " Entité: Salut GrandPy ! > Etiquette: MISC\n\n"
+        " Entité: OpenClassrooms > Etiquette: ORG\n"
+    )
 
     assert out == expected_outcome
 
@@ -155,14 +198,17 @@ def test_get_entities_return_entities(capsys):
 def test_get_valuable_info(capsys):
     test = Analyze("Où se trouve la Tour Eiffel ?", auto=False)
 
-    expected_outcome = "\n Phrase initiale: Où se trouve la Tour Eiffel ?. " \
-                       "\n Mots retenus: [trouve, Tour, Eiffel]\n"
+    expected_outcome = (
+        "\n Phrase initiale: Où se trouve la Tour Eiffel ?. "
+        "\n Mots retenus: [trouve, Tour, Eiffel]\n"
+    )
 
     test.get_valuable_info()
 
     out, err = capsys.readouterr()
 
     assert out == expected_outcome
+
 
 def test_check_greetings_return_no_greetings(capsys):
     """Shouldn't find greetings word and have false for the greetings_found
@@ -228,6 +274,7 @@ def test_check_travel_verb_not_found():
 
     assert result == None
     assert not test.found_travel_verbs
+
 
 def test_check_travel_verb_found(capsys):
     """Shouldn't find any verb related to a travel intention"""

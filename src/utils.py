@@ -3,6 +3,9 @@ from .components.api.wikipedia import Wikipedia, WikipediaModuleError
 from .components.api.maps import Gmaps, GmapsModuleError
 
 
+"""Complementary tools to help make a decision about user's input."""
+
+
 def analyze_query(query):
     """Analyse user input to get relevant information.
     Return a dict with specifics words for research on Google maps and
@@ -13,8 +16,10 @@ def analyze_query(query):
     analysis = {}
 
     if parser_analysis.found_greetings:
-        analysis.update({"greetings": True,
-                    "greeting_word": parser_analysis.greetings[0].text})
+        analysis.update(
+            {"greetings": True,
+             "greeting_word": parser_analysis.greetings[0].text}
+        )
 
     else:
         analysis.update({"greetings": False})
@@ -23,24 +28,25 @@ def analyze_query(query):
         analysis.update({"rephrase": True})
         return analysis
 
-    elif not parser_analysis.found_locations:
-        analysis.update({"location": False,
-                        "rephrase": True})
+    if not parser_analysis.found_locations:
+        analysis.update({"location": False, "rephrase": True})
         return analysis
 
-    else:
-        analysis.update({"rephrase": False})
+    analysis.update({"rephrase": False})
 
     if len(parser_analysis.locations) > 1:
-        analysis.update({"location": True,
-                         "notsure": True,
-                        "notsure_search": parser_analysis.locations[0].text})
+        analysis.update(
+            {
+                "location": True,
+                "notsure": True,
+                "notsure_search": parser_analysis.locations[0].text,
+            }
+        )
         return analysis
 
-    else:
-        analysis.update({"location": True,
-                        "look_for": parser_analysis.locations[0].text})
-        return analysis
+    analysis.update({"location": True,
+                     "look_for": parser_analysis.locations[0].text})
+    return analysis
 
 
 def search_external_services(results_collector, keyword):
@@ -50,8 +56,7 @@ def search_external_services(results_collector, keyword):
 
     except GmapsModuleError:
 
-        results_collector.update({"error": True, 
-        "gmaps": None})
+        results_collector.update({"error": True, "gmaps": None})
 
     else:
         results_collector.update({"gmaps": maps_results})
@@ -61,8 +66,7 @@ def search_external_services(results_collector, keyword):
 
     except WikipediaModuleError:
 
-        results_collector.update({"error": True,
-        "wikipedia": None})
+        results_collector.update({"error": True, "wikipedia": None})
 
     else:
         results_collector.update({"wikipedia": wikipedia_results})
@@ -75,20 +79,19 @@ def make_decision(query):
     services (Google Maps and Wikipedia)"""
     parser_analysis = analyze_query(query)
 
-    if parser_analysis.get('rephrase'):
+    if parser_analysis.get("rephrase"):
         return parser_analysis
 
-    if parser_analysis.get('notsure'):
-        final_decision = search_external_services(parser_analysis,
-                                                  keyword=parser_analysis.get(
-            'notsure_search'))
+    if parser_analysis.get("notsure"):
+        final_decision = search_external_services(
+            parser_analysis, keyword=parser_analysis.get("notsure_search")
+        )
 
         return final_decision
 
     else:
-        final_decision = search_external_services(parser_analysis,
-                                                  keyword=parser_analysis.get('look_for'))
+        final_decision = search_external_services(
+            parser_analysis, keyword=parser_analysis.get("look_for")
+        )
 
         return final_decision
-
-

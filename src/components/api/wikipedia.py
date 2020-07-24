@@ -1,18 +1,25 @@
-import requests
-
 import logging
 
-wl = logging.getLogger('components.wikipedia')
+import requests
+
+
+""" Contains logic to search Wikipedia API."""
+
+
+wl = logging.getLogger("components.wikipedia")
 
 
 class WikipediaModuleError(Exception):
     """Defining module specific errors"""
+
     pass
 
 
 class Wikipedia:
-    """Access wikipedia API for search on name. Requiere a string for instanciation.
-    'infos' property keep a dict containing an extract and the url of found page.
+    """Access wikipedia API for search on name. Requiere a string
+    for instanciation.
+    'infos' property keep a dict containing an extract and the url of
+    found page.
     Only the first page found on wikipedia (sorted by relevance) is queried"""
 
     URL = "https://fr.wikipedia.org/w/api.php"
@@ -25,7 +32,7 @@ class Wikipedia:
             "utf8": 1,
             "srsearch": None,
             "srenablerewrites": 1,
-            "srsort": "relevance"
+            "srsort": "relevance",
         }
 
         self.page_search_params = {
@@ -37,14 +44,16 @@ class Wikipedia:
             "exsentences": "3",
             "exintro": 1,
             "explaintext": 1,
-            "inprop": "url"
+            "inprop": "url",
         }
 
         self.query = query
 
         if len(self.query) == 0:
-            wl.error('Mauvaise initiation de la recherche: au moins un '
-                     'mot-clé est nécessaire pour lancer la recherche.')
+            wl.error(
+                "Mauvaise initiation de la recherche: au moins un "
+                "mot-clé est nécessaire pour lancer la recherche."
+            )
             raise WikipediaModuleError
 
         self.session = requests.Session()
@@ -59,11 +68,10 @@ class Wikipedia:
 
         # Check connection to Wikipedia API
         try:
-            response = self.session.get(url=self.URL, params=params,
-                                        timeout=5)
+            response = self.session.get(url=self.URL, params=params, timeout=5)
 
         except requests.exceptions.RequestException as e:
-            message = 'Une erreur de connexion est survenue => {}'.format(e)
+            message = "Une erreur de connexion est survenue => {}".format(e)
             wl.exception(message)
             raise
 
@@ -74,8 +82,10 @@ class Wikipedia:
                 response.raise_for_status()
 
             except requests.exceptions.HTTPError as e:
-                message = "Le serveur wikipedia a répondu avec le code" \
-                          " {} => {}".format(response.status_code, e)
+                message = (
+                    "Le serveur wikipedia a répondu avec le code"
+                    " {} => {}".format(response.status_code, e)
+                )
                 wl.exception(message)
                 raise
 
@@ -92,7 +102,7 @@ class Wikipedia:
             data = api_response.json()
 
         except requests.exceptions.ContentDecodingError as e:
-            message = 'Problème avec le JSON reçu => {}'.format(e)
+            message = "Problème avec le JSON reçu => {}".format(e)
             wl.exception(message)
             raise
 
@@ -100,13 +110,14 @@ class Wikipedia:
             # Wikipedia send back a json with a error section in
             # case of bad request. But the http code is still 200...
             if "error" in data.keys():
-                wl.error("Le serveur Wikipedia indique une erreur à "
-                         "l'intérieur de la réponse "
-                         "=> {}.".format(data.get('error')))
+                wl.error(
+                    "Le serveur Wikipedia indique une erreur à "
+                    "l'intérieur de la réponse "
+                    "=> {}.".format(data.get("error"))
+                )
                 raise requests.exceptions.HTTPError
 
-            else:
-                return data
+            return data
 
     def _find_page_id(self):
         """Get id of the first page corresponding to the query. 
@@ -130,7 +141,7 @@ class Wikipedia:
                 raise WikipediaModuleError
 
             else:
-                page_id = data['query']['search'][0].get('pageid')
+                page_id = data["query"]["search"][0].get("pageid")
                 return page_id
 
     def _get_infos(self, page_id):
@@ -158,8 +169,8 @@ class Wikipedia:
                 raise WikipediaModuleError
 
             else:
-                extract = data['query']['pages'][str(page_id)].get('extract')
-                page_url = data['query']['pages'][str(page_id)].get('fullurl')
+                extract = data["query"]["pages"][str(page_id)].get("extract")
+                page_url = data["query"]["pages"][str(page_id)].get("fullurl")
 
                 return {"extract": extract, "url": page_url}
 
@@ -167,9 +178,12 @@ class Wikipedia:
 def main():
     test_search = Wikipedia("Paris")
     print(test_search.result_page_id)
-    print("Extrait: \n {a} \n Lien: {b}".format(a=test_search.infos.get(
-        "extract"), b=test_search.infos.get("url")))
+    print(
+        "Extrait: \n {a} \n Lien: {b}".format(
+            a=test_search.infos.get("extract"), b=test_search.infos.get("url")
+        )
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
