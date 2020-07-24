@@ -5,9 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Let's chat papybot !</title>
 
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='/images/favicon-32x32.png') }}">
-        <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='/images/favicon-96x96.png') }}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='/images/favicon-16x16.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='/images/bot_ico_32.png') }}">
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='/images/bot_ico_96.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='/images/bot_ico_16.png') }}">
 
         <!-- style sheet import -->
         <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
@@ -19,8 +19,12 @@
 
         <!-- top navigation bar -->
         <div class="navbar navbar-light shadow mb-2 container-fluid sticky-top" style="background-color: #85b3d7" role="navigation">
-            <div class="row mx-auto">
-                <a class="navbar-brand col" href="/"><span class="custom-brand">PapyBot</span></a>
+            <div id="topnav" class="row ml-1 align-items-center">
+                <img class="img-fluid col-auto" src="{{url_for('static', filename='/images/bot_ico_96.png')}}" alt="Robot Head">
+                <a class="navbar-brand col-auto" href="/">
+                    <span class="custom-brand">PapyBot</span>
+                    <h6><small><em>Le monde est mon jardin !</em></small></h6>
+                </a>
             </div>
         </div>
 
@@ -33,24 +37,26 @@
 
         <!-- bottom navigation bar -->
         <footer>
-            <nav class="navbar container-fluid" role="navigation">
-                <div class="row mx-auto">
-                    <a class="navbar-brand col-auto col-md" href="#welcome">
+            <nav class="navbar container-fluid justify-content-center " role="navigation">
+                <div class="row justify-content-center">
+                    <a class="navbar-brand col-auto " href="#welcome">
                         <img src="{{url_for('static', filename='images/arrow_up.svg')}}" alt="retour accueil">
                     </a>
-                    <section class="d-none d-md-block col-md-auto">
-                        <h6>Web application by: </h6>
+
+                    <section class="d-none d-md-block col-auto">
+                        <h6>Web application by </h6>
                         <a href="https://www.linkedin.com/in/g%C3%A9ry-jasmin-035b64149/" target="_blank">
                             G. JASMIN
                             <img class="img-fluid mb-2" style="height: 20px; width: 20px;"
                                 src="{{url_for('static', filename='images/linkedin.png')}}" alt="LinkedIn" />
                         </a>
                     </section>
-                    <section class="col-auto col-md-auto">
+            
+                    <section class="col-auto">
                         <h6>View source code on
                             <a href="https://github.com/Ryge76/papybot" target="_blank">Github</a>
                         </h6>
-                
+            
                     </section>
                 </div>
             </nav>

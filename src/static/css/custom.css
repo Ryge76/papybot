@@ -1,8 +1,8 @@
-/* @font-face {
+@font-face {
     font-family: 'Compagnon';
     src: url('/fonts/Compagnon-Bold.otf') format(otf),
     url('/fonts/Compagnon-Light.otf') format(otf);
-} */
+}
 
 @font-face {
     font-family: 'Library';
@@ -31,6 +31,10 @@ body {
     position: relative;
 }
 
+#topnav a {
+    color: #071d34;
+
+}
 footer {
     background-color: #85b3d7;
     box-shadow: 0px -2px 5px grey;
@@ -39,9 +43,14 @@ footer {
     bottom: 0;
 }
 
+footer h6  {
+    color: #071d34;
+}
+
 #welcome {
        max-width: 75%;
-       font-family: 'Robota';
+       font-family: 'Roobota' ;
+       color: #071d34;
 }
 
 .custom-brand {
