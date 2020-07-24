@@ -1,23 +1,24 @@
 from flask import render_template, request, jsonify, Blueprint
 
-from .config import GMAPS_KEY
+from .config import FE_GMAPS_KEY
 from .utils import make_decision
 
 
-bp = Blueprint('papybot', __name__)
+bp = Blueprint("papybot", __name__)
 
-@bp.route('/index/')
-@bp.route('/')
+
+@bp.route("/index/")
+@bp.route("/")
 def index():
-    
-    return render_template('index.html', key=GMAPS_KEY)
+    """Root view function"""
+    return render_template("index.html", key=FE_GMAPS_KEY)
 
 
-@bp.route('/search/', methods=['POST'])
+@bp.route("/search/", methods=["POST"])
 def search():
-
-    if request.method == 'POST':
-        user_input = request.get_json().get('query')
+    """Search logic for user's input"""
+    if request.method == "POST":
+        user_input = request.get_json().get("query")
 
         print("L'utilisateur demande: '{}'".format(user_input))
 
@@ -26,4 +27,3 @@ def search():
         print(analysis)
 
     return jsonify(analysis)
-

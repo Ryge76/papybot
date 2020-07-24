@@ -5,11 +5,19 @@ from ...src.components.api.wikipedia import Wikipedia, WikipediaModuleError
 
 # ---- Defining fixtures and mocks used for testing ---- #
 
-sample_response_with_error = {"error":{"code":"badvalue","info":"Unrecognized value for parameter \"action\": fake_action.","*":"See https://fr.wikipedia.org/w/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/mailman/listinfo/mediawiki-api-announce&gt; for notice of API deprecations and breaking changes."},"servedby":"mw1345"}
+sample_response_with_error = {
+    "error": {
+        "code": "badvalue",
+        "info": 'Unrecognized value for parameter "action": fake_action.',
+        "*": "See https://fr.wikipedia.org/w/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at &lt;https://lists.wikimedia.org/mailman/listinfo/mediawiki-api-announce&gt; for notice of API deprecations and breaking changes.",
+    },
+    "servedby": "mw1345",
+}
+
 
 @pytest.fixture
 def wikipedia_test_instance():
-    return Wikipedia('test', auto=False)
+    return Wikipedia("test", auto=False)
 
 
 @pytest.fixture
@@ -31,6 +39,7 @@ def mock_response():
 
 def mock_requests_session():
     """ Create fake session object. """
+
     class FakeSession:
         def __init__(self):
             self.status_code = 400
@@ -52,8 +61,8 @@ def mock_wiki_instance(monkeypatch):
     """Create Wikipedia instance with 'session' attribute containing a
     mocked request.Session object"""
 
-    monkeypatch.setattr('requests.Session', mock_requests_session)
-    instance = Wikipedia('test', auto=False)
+    monkeypatch.setattr("requests.Session", mock_requests_session)
+    instance = Wikipedia("test", auto=False)
 
     return instance
 
@@ -72,18 +81,16 @@ def test_wikipedia_instance_empty_query_error():
     empty string."""
 
     with pytest.raises(WikipediaModuleError):
-        Wikipedia('')
+        Wikipedia("")
 
 
 # Check handling of failing connection to wikipedia API
 def test_call_api_unreachable_api_error(wikipedia_test_instance):
     """Should raise o specific class error as requested site is unavailable"""
     # modify URL of the test instance to fake api out of reach
-    wikipedia_test_instance.URL = 'http://fake-address.io'
+    wikipedia_test_instance.URL = "http://fake-address.io"
 
-    test_parameters_for_call = {
-            "action": "whatever"
-        }
+    test_parameters_for_call = {"action": "whatever"}
 
     with pytest.raises(requests.exceptions.RequestException):
         wikipedia_test_instance._call_api(test_parameters_for_call)
@@ -92,9 +99,7 @@ def test_call_api_unreachable_api_error(wikipedia_test_instance):
 # Check handling of failing connection to wikipedia API
 def test_call_api_http_error(mock_wiki_instance):
     """Should raise a Wkipedia Error since fake response.status.code is 400"""
-    test_parameters_for_call = {
-            "action": "whatever"
-        }
+    test_parameters_for_call = {"action": "whatever"}
 
     with pytest.raises(requests.exceptions.HTTPError):
         mock_wiki_instance._call_api(test_parameters_for_call)
