@@ -5,19 +5,16 @@ verify_ssl = true
 
 [dev-packages]
 pytest = "*"
-selenium = "*"
-flask-debugtoolbar = "*"
+flake8 = "*"
 pylint = "*"
-python-dotenv = "*"
 pytest-cov = "*"
+black = "*"
 
 [packages]
 flask = "*"
-spacy = "*"
-blis = "*"
 requests = "*"
-fr-core-news-sm = "*"
-googlemaps = "*"
+spacy = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.7"
