@@ -8,13 +8,13 @@ pytest = "*"
 flake8 = "*"
 pylint = "*"
 pytest-cov = "*"
-black = "*"
 
 [packages]
 flask = "*"
 requests = "*"
 spacy = "*"
 python-dotenv = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.7"
