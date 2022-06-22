@@ -25,7 +25,7 @@ MarkupSafe==1.1.1
 mccabe==0.6.1
 more-itertools==8.4.0
 murmurhash==1.0.2
-numpy==1.19.1
+numpy==1.22.0
 packaging==20.4
 pathspec==0.8.0
 plac==1.1.3
